@@ -1,0 +1,45 @@
+[
+  {
+    "dt": "Vehicle",
+    "fieldname": "vehicle_image",
+    "fieldtype": "Attach Image",
+    "label": "Vehicle Image",
+    "insert_after": "model",
+    "description": "Photo of the vehicle"
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "year_of_manufacture",
+    "fieldtype": "Int",
+    "label": "Year of Manufacture",
+    "insert_after": "vehicle_image",
+    "non_negative": 1,
+    "description": "Manufacturing year (e.g. 2022)"
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "stride_section",
+    "fieldtype": "Section Break",
+    "label": "Stride Rental",
+    "insert_after": "doors"
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "vehicle_status",
+    "fieldtype": "Select",
+    "label": "Vehicle Status",
+    "insert_after": "stride_section",
+    "options": "\nAvailable\nRented\nOwned by Client\nMaintenance",
+    "default": "Available",
+    "in_list_view": 1,
+    "in_standard_filter": 1
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "gps_tracker_id",
+    "fieldtype": "Data",
+    "label": "GPS Tracker ID",
+    "insert_after": "vehicle_status",
+    "description": "IOPGPS device identifier"
+  }
+]
