@@ -35,10 +35,10 @@ required_apps = ["frappe", "erpnext"]
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 
-# doctype_list_js = {
-# 	"Custom Field": "stride/patches/custom_fields/custom_field.js",
-# 	"Property Setter": "stride/patches/property_setter/property_setter.js",
-# }
+doctype_list_js = {
+	"Custom Field": "stride/patches/custom_fields/custom_field.js",
+	"Property Setter": "stride/patches/property_setter/property_setter.js",
+}
 
 
 # Installation
@@ -50,10 +50,10 @@ required_apps = ["frappe", "erpnext"]
 # -------
 # Custom fields and property setters (hms_tz pattern) — Task 3
 
-# after_migrate = [
-# 	"stride.patches.custom_fields.create_custom_fields.execute",
-# 	"stride.patches.property_setter.create_property_setters.execute",
-# ]
+after_migrate = [
+	"stride.patches.custom_fields.create_custom_fields.execute",
+	"stride.patches.property_setter.create_property_setters.execute",
+]
 
 
 # Document Events
