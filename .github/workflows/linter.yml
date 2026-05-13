@@ -48,6 +48,8 @@ jobs:
           python-version: '3.12'
 
       - uses: pre-commit/action@v3.0.0
+        env:
+          SKIP: frappe-semgrep-rules
 
   semgrep:
     name: Frappe Semgrep Security Scan
@@ -66,4 +68,4 @@ jobs:
       - name: Run Semgrep rules
         run: |
           pip install semgrep
-          semgrep ci --config ./frappe-semgrep-rules/rules --config r/python.lang.security
+          semgrep scan --config ./frappe-semgrep-rules/rules --config r/python.lang.security --error
