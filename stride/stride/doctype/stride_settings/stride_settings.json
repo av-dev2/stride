@@ -1,0 +1,91 @@
+{
+  "actions": [],
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "invoicing_section",
+    "enable_auto_invoicing",
+    "rental_item",
+    "gps_section",
+    "gps_api_url",
+    "gps_column_break",
+    "gps_api_key",
+    "gps_polling_interval_minutes"
+  ],
+  "fields": [
+    {
+      "fieldname": "invoicing_section",
+      "fieldtype": "Section Break",
+      "label": "Invoicing"
+    },
+    {
+      "default": "0",
+      "description": "Enable automatic generation of Sales Invoices for due lease payment periods",
+      "fieldname": "enable_auto_invoicing",
+      "fieldtype": "Check",
+      "label": "Enable Auto Invoicing"
+    },
+    {
+      "description": "The Item used in auto-generated Sales Invoices for rental payments. Income account and cost center are derived from this Item's defaults.",
+      "fieldname": "rental_item",
+      "fieldtype": "Link",
+      "label": "Rental Item",
+      "mandatory_depends_on": "eval:doc.enable_auto_invoicing",
+      "options": "Item"
+    },
+    {
+      "fieldname": "gps_section",
+      "fieldtype": "Section Break",
+      "label": "GPS Tracking (IOPGPS)"
+    },
+    {
+      "description": "IOPGPS API base URL",
+      "fieldname": "gps_api_url",
+      "fieldtype": "Data",
+      "label": "GPS API URL"
+    },
+    {
+      "fieldname": "gps_column_break",
+      "fieldtype": "Column Break"
+    },
+    {
+      "description": "Authentication key for IOPGPS API",
+      "fieldname": "gps_api_key",
+      "fieldtype": "Password",
+      "label": "GPS API Key"
+    },
+    {
+      "default": "15",
+      "description": "Frequency (in minutes) for polling GPS data from IOPGPS",
+      "fieldname": "gps_polling_interval_minutes",
+      "fieldtype": "Int",
+      "label": "GPS Polling Interval (Minutes)",
+      "non_negative": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "issingle": 1,
+  "links": [],
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "Stride Settings",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "print": 1,
+      "read": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}
