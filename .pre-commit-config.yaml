@@ -1,7 +1,6 @@
-exclude: 'node_modules|.git'
-default_stages: [pre-commit]
+exclude: "node_modules|.git"
+default_stages: [pre-commit, manual]
 fail_fast: false
-
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -10,11 +9,13 @@ repos:
       - id: trailing-whitespace
         files: "stride.*"
         exclude: ".*json$|.*txt$|.*csv|.*md|.*svg"
+      - id: check-yaml
+      - id: no-commit-to-branch
+        args: ["--branch", "develop", "--branch", "main", "--branch", "production"]
       - id: check-merge-conflict
       - id: check-ast
       - id: check-json
       - id: check-toml
-      - id: check-yaml
       - id: debug-statements
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
@@ -45,7 +46,6 @@ repos:
                 stride/public/js/lib/.*
             )$
 
-
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v8.44.0
     hooks:
@@ -63,7 +63,17 @@ repos:
                 stride/public/js/lib/.*
             )$
 
+  # Frappe Semgrep security rules (local hook — repo has no .pre-commit-hooks.yaml)
+  - repo: local
+    hooks:
+      - id: frappe-semgrep-rules
+        name: "Frappe Semgrep Security Rules"
+        entry: bash -c 'if [ ! -d frappe-semgrep-rules ]; then git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-rules; fi && semgrep scan --config ./frappe-semgrep-rules/rules --config r/python.lang.security --error --quiet "$@"' --
+        language: system
+        types: [python]
+        pass_filenames: true
+
 ci:
     autoupdate_schedule: weekly
-    skip: []
+    skip: [frappe-semgrep-rules]
     submodules: false
