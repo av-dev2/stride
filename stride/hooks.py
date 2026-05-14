@@ -72,12 +72,12 @@ after_migrate = [
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"daily": ["stride.tasks.generate_lease_invoices"],
-# 	"cron": {
-# 		"*/15 * * * *": ["stride.tasks.poll_gps_data"],
-# 	},
-# }
+scheduler_events = {
+	"daily": ["stride.tasks.generate_lease_invoices"],
+	# "cron": {
+	# 	"*/15 * * * *": ["stride.tasks.poll_gps_data"],
+	# },
+}
 
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
