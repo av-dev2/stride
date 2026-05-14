@@ -1,0 +1,85 @@
+{
+  "actions": [],
+  "autoname": "field:template_name",
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "template_name",
+    "is_default",
+    "column_break_tmpl",
+    "template_type",
+    "content_section",
+    "content"
+  ],
+  "fields": [
+    {
+      "fieldname": "template_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Template Name",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "is_default",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "Is Default"
+    },
+    {
+      "fieldname": "column_break_tmpl",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "Renting Agreement",
+      "description": "Used to filter templates when selecting on Rental Contract or Vehicle Handover",
+      "fieldname": "template_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Template Type",
+      "options": "Renting Agreement\nVehicle Handover",
+      "reqd": 1
+    },
+    {
+      "fieldname": "content_section",
+      "fieldtype": "Section Break",
+      "label": "Template Content"
+    },
+    {
+      "description": "HTML content with Jinja placeholders. Available variables: {{ customer_name }}, {{ vehicle }}, {{ vehicle_name }}, {{ rate }}, {{ period_type }}, {{ duration }}, {{ start_date }}, {{ end_date }}, {{ total_amount }}, {{ customer_identification_type }}, {{ customer_identification_no }}, {{ guarantor_name }}, {{ guarantor_id_no }}, {{ guarantor_contact }}, {{ company }}, {{ today }}",
+      "fieldname": "content",
+      "fieldtype": "Text Editor",
+      "label": "Content",
+      "reqd": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "Contract Template",
+  "naming_rule": "By fieldname",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}
