@@ -1,0 +1,216 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "naming_series:",
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "naming_series",
+    "rental_contract",
+    "lease",
+    "column_break_ref",
+    "customer",
+    "customer_name",
+    "vehicle",
+    "handover_section",
+    "handover_date",
+    "vehicle_condition",
+    "column_break_hand",
+    "odometer_reading",
+    "inspection_notes",
+    "guarantor_section",
+    "guarantor_name",
+    "column_break_guar",
+    "guarantor_id_no",
+    "document_section",
+    "contract_template",
+    "handover_attachment",
+    "handover_content",
+    "status_section",
+    "amended_from"
+  ],
+  "fields": [
+    {
+      "default": "VH-.#####",
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "VH-.#####",
+      "print_hide": 1,
+      "reqd": 1,
+      "set_only_once": 1
+    },
+    {
+      "fieldname": "rental_contract",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Rental Contract",
+      "options": "Rental Contract",
+      "reqd": 1
+    },
+    {
+      "fieldname": "lease",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Lease",
+      "options": "Lease",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_ref",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fetch_from": "rental_contract.customer",
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "label": "Customer",
+      "options": "Customer",
+      "read_only": 1
+    },
+    {
+      "fetch_from": "rental_contract.customer_name",
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Customer Name",
+      "read_only": 1
+    },
+    {
+      "fetch_from": "rental_contract.vehicle",
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Vehicle",
+      "options": "Vehicle",
+      "read_only": 1
+    },
+    {
+      "fieldname": "handover_section",
+      "fieldtype": "Section Break",
+      "label": "Handover Details"
+    },
+    {
+      "default": "Today",
+      "fieldname": "handover_date",
+      "fieldtype": "Date",
+      "in_list_view": 1,
+      "label": "Handover Date",
+      "reqd": 1
+    },
+    {
+      "default": "Good",
+      "fieldname": "vehicle_condition",
+      "fieldtype": "Select",
+      "label": "Vehicle Condition",
+      "options": "Excellent\nGood\nFair\nPoor"
+    },
+    {
+      "fieldname": "column_break_hand",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "odometer_reading",
+      "fieldtype": "Float",
+      "label": "Odometer Reading (km)"
+    },
+    {
+      "fieldname": "inspection_notes",
+      "fieldtype": "Small Text",
+      "label": "Inspection Notes"
+    },
+    {
+      "fieldname": "guarantor_section",
+      "fieldtype": "Section Break",
+      "label": "Guarantor Details"
+    },
+    {
+      "fetch_from": "rental_contract.guarantor_name",
+      "fieldname": "guarantor_name",
+      "fieldtype": "Data",
+      "label": "Guarantor Name",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_guar",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fetch_from": "rental_contract.guarantor_id_no",
+      "fieldname": "guarantor_id_no",
+      "fieldtype": "Data",
+      "label": "Guarantor ID No",
+      "read_only": 1
+    },
+    {
+      "fieldname": "document_section",
+      "fieldtype": "Section Break",
+      "label": "Handover Document"
+    },
+    {
+      "fieldname": "contract_template",
+      "fieldtype": "Link",
+      "label": "Handover Template",
+      "options": "Contract Template"
+    },
+    {
+      "fieldname": "handover_attachment",
+      "fieldtype": "Attach",
+      "label": "Handover Attachment (Scanned)"
+    },
+    {
+      "fieldname": "handover_content",
+      "fieldtype": "Text Editor",
+      "label": "Handover Content"
+    },
+    {
+      "fieldname": "status_section",
+      "fieldtype": "Section Break",
+      "label": ""
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "no_copy": 1,
+      "options": "Vehicle Handover",
+      "print_hide": 1,
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "Vehicle Handover",
+  "naming_rule": "By \"Naming Series\" field",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "amend": 1,
+      "cancel": 1,
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "submit": 1,
+      "write": 1
+    }
+  ],
+  "search_fields": "customer_name, vehicle, rental_contract",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "customer_name",
+  "track_changes": 1
+}
