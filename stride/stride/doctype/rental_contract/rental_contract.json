@@ -1,0 +1,267 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "naming_series:",
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "naming_series",
+    "customer",
+    "customer_name",
+    "column_break_cust",
+    "customer_contact",
+    "customer_identification_type",
+    "customer_identification_no",
+    "company",
+    "guarantor_section",
+    "guarantor_name",
+    "guarantor_id_no",
+    "column_break_guar",
+    "guarantor_contact",
+    "vehicle_terms_section",
+    "vehicle",
+    "vehicle_name",
+    "column_break_veh",
+    "rate",
+    "period_type",
+    "duration",
+    "rent_to_own",
+    "total_amount",
+    "contract_document_section",
+    "contract_template",
+    "contract_attachment",
+    "contract_content",
+    "status_section",
+    "status",
+    "amended_from"
+  ],
+  "fields": [
+    {
+      "default": "RC-.#####",
+      "fieldname": "naming_series",
+      "fieldtype": "Select",
+      "label": "Naming Series",
+      "options": "RC-.#####",
+      "print_hide": 1,
+      "reqd": 1,
+      "set_only_once": 1
+    },
+    {
+      "fieldname": "customer",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Customer",
+      "options": "Customer",
+      "reqd": 1
+    },
+    {
+      "fetch_from": "customer.customer_name",
+      "fieldname": "customer_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Customer Name",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_cust",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "customer_contact",
+      "fieldtype": "Data",
+      "label": "Customer Contact",
+      "options": "Phone"
+    },
+    {
+      "default": "National ID",
+      "fieldname": "customer_identification_type",
+      "fieldtype": "Select",
+      "label": "Identification Type",
+      "options": "National ID\nTIN\nDriver License\nPassport\nVoter ID",
+      "reqd": 1
+    },
+    {
+      "fieldname": "customer_identification_no",
+      "fieldtype": "Data",
+      "label": "Identification No",
+      "reqd": 1
+    },
+    {
+      "fetch_from": "customer.default_company",
+      "fieldname": "company",
+      "fieldtype": "Link",
+      "hidden": 1,
+      "label": "Company",
+      "options": "Company",
+      "read_only": 1
+    },
+    {
+      "fieldname": "guarantor_section",
+      "fieldtype": "Section Break",
+      "label": "Guarantor Details"
+    },
+    {
+      "fieldname": "guarantor_name",
+      "fieldtype": "Data",
+      "label": "Guarantor Name",
+      "reqd": 1
+    },
+    {
+      "fieldname": "guarantor_id_no",
+      "fieldtype": "Data",
+      "label": "Guarantor ID No",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_guar",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "guarantor_contact",
+      "fieldtype": "Data",
+      "label": "Guarantor Contact",
+      "options": "Phone"
+    },
+    {
+      "fieldname": "vehicle_terms_section",
+      "fieldtype": "Section Break",
+      "label": "Vehicle & Terms"
+    },
+    {
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Vehicle",
+      "options": "Vehicle",
+      "reqd": 1
+    },
+    {
+      "fetch_from": "vehicle.license_plate",
+      "fieldname": "vehicle_name",
+      "fieldtype": "Data",
+      "label": "License Plate",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_veh",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "rate",
+      "fieldtype": "Currency",
+      "in_list_view": 1,
+      "label": "Rate",
+      "reqd": 1
+    },
+    {
+      "default": "Monthly",
+      "fieldname": "period_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "label": "Period Type",
+      "options": "Daily\nWeekly\nMonthly\nYearly",
+      "reqd": 1
+    },
+    {
+      "description": "Number of periods (e.g. 12 for 12 months if Period Type is Monthly)",
+      "fieldname": "duration",
+      "fieldtype": "Int",
+      "label": "Duration (Periods)",
+      "non_negative": 1,
+      "reqd": 1
+    },
+    {
+      "default": "0",
+      "description": "Customer gains ownership of the vehicle after all payments are completed",
+      "fieldname": "rent_to_own",
+      "fieldtype": "Check",
+      "label": "Rent to Own"
+    },
+    {
+      "fieldname": "total_amount",
+      "fieldtype": "Currency",
+      "label": "Total Amount",
+      "read_only": 1
+    },
+    {
+      "fieldname": "contract_document_section",
+      "fieldtype": "Section Break",
+      "label": "Contract Document"
+    },
+    {
+      "fieldname": "contract_template",
+      "fieldtype": "Link",
+      "label": "Contract Template",
+      "options": "Contract Template"
+    },
+    {
+      "fieldname": "contract_attachment",
+      "fieldtype": "Attach",
+      "label": "Contract Attachment (Scanned)"
+    },
+    {
+      "fieldname": "contract_content",
+      "fieldtype": "Text Editor",
+      "label": "Contract Content"
+    },
+    {
+      "fieldname": "status_section",
+      "fieldtype": "Section Break",
+      "label": ""
+    },
+    {
+      "default": "Draft",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Status",
+      "options": "Draft\nActive\nCompleted\nCancelled",
+      "read_only": 1
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "no_copy": 1,
+      "options": "Rental Contract",
+      "print_hide": 1,
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "is_submittable": 1,
+  "links": [],
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "Rental Contract",
+  "naming_rule": "By \"Naming Series\" field",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "amend": 1,
+      "cancel": 1,
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "submit": 1,
+      "write": 1
+    }
+  ],
+  "search_fields": "customer_name, vehicle, status",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "customer_name",
+  "track_changes": 1
+}
