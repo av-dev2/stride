@@ -1,0 +1,131 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "hash",
+  "creation": "2024-01-01 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "vehicle",
+    "timestamp",
+    "column_break_loc",
+    "latitude",
+    "longitude",
+    "movement_section",
+    "speed",
+    "column_break_mov",
+    "heading",
+    "address",
+    "alert_section",
+    "alert_type",
+    "column_break_alert",
+    "alert_message"
+  ],
+  "fields": [
+    {
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Vehicle",
+      "options": "Vehicle",
+      "reqd": 1
+    },
+    {
+      "fieldname": "timestamp",
+      "fieldtype": "Datetime",
+      "in_list_view": 1,
+      "label": "Timestamp",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_loc",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "latitude",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Latitude",
+      "precision": "6"
+    },
+    {
+      "fieldname": "longitude",
+      "fieldtype": "Float",
+      "in_list_view": 1,
+      "label": "Longitude",
+      "precision": "6"
+    },
+    {
+      "fieldname": "movement_section",
+      "fieldtype": "Section Break",
+      "label": "Movement"
+    },
+    {
+      "fieldname": "speed",
+      "fieldtype": "Float",
+      "label": "Speed (km/h)"
+    },
+    {
+      "fieldname": "column_break_mov",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "heading",
+      "fieldtype": "Float",
+      "label": "Heading (degrees)"
+    },
+    {
+      "fieldname": "address",
+      "fieldtype": "Small Text",
+      "label": "Address"
+    },
+    {
+      "fieldname": "alert_section",
+      "fieldtype": "Section Break",
+      "collapsible": 1,
+      "label": "Alerts"
+    },
+    {
+      "fieldname": "alert_type",
+      "fieldtype": "Data",
+      "label": "Alert Type"
+    },
+    {
+      "fieldname": "column_break_alert",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "alert_message",
+      "fieldtype": "Small Text",
+      "label": "Alert Message"
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [],
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "GPS Log",
+  "naming_rule": "Random",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "search_fields": "vehicle, alert_type",
+  "sort_field": "timestamp",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 0
+}
