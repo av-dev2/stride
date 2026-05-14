@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { authGuard } from "./auth";
 
 const routes = [
 	{
@@ -17,5 +18,8 @@ const router = createRouter({
 	history: createWebHistory("/frontend"),
 	routes,
 });
+
+// Protect all routes — redirect to /login if not authenticated
+router.beforeEach(authGuard);
 
 export default router;
