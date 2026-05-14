@@ -59,15 +59,12 @@ after_migrate = [
 # Document Events
 # ---------------
 
-# doc_events = {
-# 	"Payment Entry": {
-# 		"on_submit": "stride.overrides.payment_entry.on_submit",
-# 		"on_cancel": "stride.overrides.payment_entry.on_cancel",
-# 	},
-# 	"Payment Reconciliation": {
-# 		"on_submit": "stride.overrides.payment_reconciliation.on_submit",
-# 	},
-# }
+doc_events = {
+	"Payment Entry": {
+		"on_submit": "stride.overrides.payment_entry.on_submit",
+		"on_cancel": "stride.overrides.payment_entry.on_cancel",
+	},
+}
 
 # Scheduled Tasks
 # ---------------

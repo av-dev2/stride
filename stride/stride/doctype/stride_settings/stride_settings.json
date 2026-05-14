@@ -7,6 +7,8 @@
     "invoicing_section",
     "enable_auto_invoicing",
     "rental_item",
+    "invoicing_column_break",
+    "enable_auto_reconciliation",
     "gps_section",
     "gps_api_url",
     "gps_column_break",
@@ -33,6 +35,17 @@
       "label": "Rental Item",
       "mandatory_depends_on": "eval:doc.enable_auto_invoicing",
       "options": "Item"
+    },
+    {
+      "fieldname": "invoicing_column_break",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "0",
+      "description": "When enabled, submitting a Payment Entry against a lease-linked Sales Invoice will automatically mark the corresponding Lease Payment Schedule row as Paid.",
+      "fieldname": "enable_auto_reconciliation",
+      "fieldtype": "Check",
+      "label": "Enable Auto Reconciliation"
     },
     {
       "fieldname": "gps_section",
