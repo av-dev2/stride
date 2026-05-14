@@ -85,3 +85,7 @@ override_doctype_dashboards = {
 
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
+
+website_route_rules = [
+	{"from_route": "/frontend/<path:app_path>", "to_route": "frontend"},
+]

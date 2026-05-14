@@ -1,42 +1,39 @@
-import { createApp, reactive } from "vue";
+import "./style.css";
+import "leaflet/dist/leaflet.css";
+
+import { createApp } from "vue";
+import {
+	FrappeUI,
+	Button,
+	Badge,
+	setConfig,
+	frappeRequest,
+	FeatherIcon,
+} from "frappe-ui";
+import router from "./router";
 import App from "./App.vue";
 
-import router from "./router";
-import resourceManager from "../../../doppio/libs/resourceManager";
-import call from "../../../doppio/libs/controllers/call";
-import socket from "../../../doppio/libs/controllers/socket";
-import Auth from "../../../doppio/libs/controllers/auth";
-
 const app = createApp(App);
-const auth = reactive(new Auth());
 
-// Plugins
+setConfig("resourceFetcher", frappeRequest);
+
+app.use(FrappeUI);
 app.use(router);
-app.use(resourceManager);
 
-// Global Properties,
-// components can inject this
-app.provide("$auth", auth);
-app.provide("$call", call);
-app.provide("$socket", socket);
+// Register global components
+app.component("Button", Button);
+app.component("Badge", Badge);
+app.component("FeatherIcon", FeatherIcon);
 
-// Configure route gaurds
-router.beforeEach(async (to, from, next) => {
-	if (to.matched.some((record) => !record.meta.isLoginPage)) {
-		// this route requires auth, check if logged in
-		// if not, redirect to login page.
-		if (!auth.isLoggedIn) {
-			next({ name: "Login", query: { route: to.path } });
-		} else {
-			next();
+if (import.meta.env.DEV) {
+	frappeRequest({
+		url: "/api/method/stride.www.frontend.get_context_for_dev",
+	}).then((values) => {
+		for (let key in values) {
+			window[key] = values[key];
 		}
-	} else {
-		if (auth.isLoggedIn) {
-			next({ name: "Home" });
-		} else {
-			next();
-		}
-	}
-});
-
-app.mount("#app");
+		app.mount("#app");
+	});
+} else {
+	app.mount("#app");
+}

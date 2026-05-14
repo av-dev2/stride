@@ -1,12 +1,7 @@
 <template>
-	<div>
-		<button v-if="$auth.isLoggedIn" @click="$auth.logout()">Logout</button>
+	<div id="stride-app" class="min-h-screen bg-gray-50">
 		<router-view />
 	</div>
 </template>
 
-<script>
-export default {
-	inject: ["$auth"],
-};
-</script>
+<script setup></script>
