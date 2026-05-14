@@ -127,3 +127,20 @@ def _create_sales_invoice_for_row(row: dict, rental_item: str) -> None:
 		row.name,
 		{"sales_invoice": si.name, "status": "Invoiced"},
 	)
+
+
+def poll_gps_data() -> None:
+	"""Cron job (every 15 min): poll IOPGPS API for vehicle locations.
+
+	Fetches real-time device positions and creates GPS Log records.
+	Configured via Stride Settings (GPS section).
+	"""
+	from stride.api.gps import poll_iopgps_locations
+
+	result = poll_iopgps_locations()
+
+	if result.get("errors"):
+		frappe.log_error(
+			title="GPS Polling: Errors",
+			message="\n".join(result["errors"]),
+		)

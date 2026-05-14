@@ -10,6 +10,7 @@
     "invoicing_column_break",
     "enable_auto_reconciliation",
     "gps_section",
+    "gps_account",
     "gps_api_url",
     "gps_column_break",
     "gps_api_key",
@@ -51,6 +52,12 @@
       "fieldname": "gps_section",
       "fieldtype": "Section Break",
       "label": "GPS Tracking (IOPGPS)"
+    },
+    {
+      "description": "IOPGPS account name (used for API authentication)",
+      "fieldname": "gps_account",
+      "fieldtype": "Data",
+      "label": "GPS Account"
     },
     {
       "description": "IOPGPS API base URL",

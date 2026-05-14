@@ -71,9 +71,9 @@ doc_events = {
 
 scheduler_events = {
 	"daily": ["stride.tasks.generate_lease_invoices"],
-	# "cron": {
-	# 	"*/15 * * * *": ["stride.tasks.poll_gps_data"],
-	# },
+	"cron": {
+		"*/15 * * * *": ["stride.tasks.poll_gps_data"],
+	},
 }
 
 # Dashboard Overrides
