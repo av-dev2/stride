@@ -1,0 +1,47 @@
+/* Vehicle Map Page Styles */
+
+.stride-map-container {
+  margin: 0;
+  padding: 0;
+}
+
+#stride-vehicle-map {
+  z-index: 1;
+}
+
+/* Fix Leaflet control styles inside Frappe */
+.leaflet-control-zoom a {
+  color: var(--text-color) !important;
+  background: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.8) !important;
+  font-size: 10px !important;
+}
+
+/* Popup styling */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px !important;
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .leaflet-control-attribution {
+  background: rgba(30, 30, 30, 0.8) !important;
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .leaflet-popup-content-wrapper {
+  background: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .leaflet-popup-tip {
+  background: var(--card-bg) !important;
+}

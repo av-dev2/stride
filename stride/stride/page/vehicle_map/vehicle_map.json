@@ -1,0 +1,23 @@
+{
+  "creation": "2024-01-01 00:00:00.000000",
+  "docstatus": 0,
+  "doctype": "Page",
+  "icon": "fa fa-map-marker",
+  "idx": 1,
+  "modified": "2024-01-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "vehicle-map",
+  "owner": "Administrator",
+  "page_name": "vehicle-map",
+  "roles": [
+    {
+      "role": "System Manager"
+    },
+    {
+      "role": "Fleet Manager"
+    }
+  ],
+  "standard": "Yes",
+  "title": "Vehicle Map"
+}
