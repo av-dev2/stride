@@ -44,7 +44,7 @@ doctype_list_js = {
 # Installation
 # ------------
 
-# after_install = "stride.setup.after_install"
+after_install = "stride.setup.after_install"
 
 # Migrate
 # -------
