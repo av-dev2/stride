@@ -33,7 +33,7 @@ required_apps = ["frappe", "erpnext"]
 # web_include_js = "/assets/stride/js/stride.js"
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Vehicle": "public/js/vehicle.js"}
 
 doctype_list_js = {
 	"Custom Field": "stride/patches/custom_fields/custom_field.js",
@@ -74,6 +74,13 @@ scheduler_events = {
 	# "cron": {
 	# 	"*/15 * * * *": ["stride.tasks.poll_gps_data"],
 	# },
+}
+
+# Dashboard Overrides
+# -------------------
+
+override_doctype_dashboards = {
+	"Vehicle": "stride.overrides.vehicle_dashboard.get_data",
 }
 
 # Automatically update python controller files with type annotations for this app.
