@@ -104,6 +104,7 @@
       "label": "Handover Type",
       "options": "Rental Return\nOwnership Transfer",
       "reqd": 1
+    },
     {
       "default": "Today",
       "fieldname": "handover_date",
