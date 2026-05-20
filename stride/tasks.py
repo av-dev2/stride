@@ -11,8 +11,8 @@ from frappe.utils import getdate, today
 def generate_lease_invoices() -> None:
 	"""Daily scheduled job: create Sales Invoices for due Lease Payment Schedule rows.
 
-	Reads the `rental_service` from each Lease record. Income account and cost
-	center are derived from the Item's defaults (multi-company safe).
+	Reads the `rental_service` from the Vehicle linked to each Lease. Income account
+	and cost center are derived from the Item's defaults (multi-company safe).
 
 	Only processes rows where:
 	- Lease is submitted (docstatus=1) and Active
@@ -75,17 +75,26 @@ def _get_due_schedule_rows() -> list[dict]:
 def _create_sales_invoice_for_row(row: dict) -> None:
 	"""Create and submit a Sales Invoice for a single schedule row.
 
+	The invoice item (rental_service) is read from the Vehicle record linked to the
+	Lease. This allows each vehicle type to have its own distinct service item.
+
 	Args:
 	        row: Lease Payment Schedule row dict
 	"""
 	lease = frappe.get_cached_doc("Lease", row.parent)
 
-	if not lease.rental_service:
+	# Read the rental service item from the linked Vehicle
+	rental_service = None
+	if lease.vehicle:
+		rental_service = frappe.db.get_value("Vehicle", lease.vehicle, "rental_service")
+
+	if not rental_service:
 		frappe.throw(
 			_(
-				"Cannot create invoice: Lease {0} does not have a Rental Service configured. "
-				"Please set the Rental Service on the Lease."
-			).format(lease.name)
+				"Cannot create invoice: Vehicle {0} linked to Lease {1} does not have a "
+				"<b>Rental Service</b> configured. "
+				"Please set the Rental Service on the Vehicle record."
+			).format(lease.vehicle or "(none)", lease.name)
 		)
 
 	# Get company from the linked Rental Contract
@@ -105,7 +114,7 @@ def _create_sales_invoice_for_row(row: dict) -> None:
 	si.append(
 		"items",
 		{
-			"item_code": lease.rental_service,
+			"item_code": rental_service,
 			"qty": 1,
 			"rate": row.amount,
 			"description": _("Rental payment for Vehicle {0} - Period {1} ({2} to {3})").format(

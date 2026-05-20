@@ -2,6 +2,18 @@
 // Loaded via doctype_js hook
 
 frappe.ui.form.on("Vehicle", {
+	setup(frm) {
+		// Rental Service: non-stock service item used for Sales Invoice lines
+		frm.set_query("rental_service", () => ({
+			filters: { disabled: 0, is_stock_item: 0 },
+		}));
+
+		// Rental Item (Asset): stock item used in Material Issue when ownership is transferred
+		frm.set_query("rental_item", () => ({
+			filters: { disabled: 0, is_stock_item: 1 },
+		}));
+	},
+
 	refresh(frm) {
 		if (!frm.is_new()) {
 			stride_render_payment_kpis(frm);

@@ -22,27 +22,6 @@ frappe.ui.form.on("Vehicle Handover", {
 		frm.set_query("contract_template", () => ({
 			filters: { template_type: "Vehicle Handover" },
 		}));
-
-		// Set rental_item query based on current handover_type
-		frm.trigger("set_rental_item_query");
-	},
-
-	handover_type(frm) {
-		// Clear rental_item when handover type changes so the user re-selects
-		frm.set_value("rental_item", "");
-		frm.trigger("set_rental_item_query");
-	},
-
-	set_rental_item_query(frm) {
-		// Ownership Transfer → stock item (vehicle asset transferred from inventory)
-		// Rental Return     → non-stock service item (rental service charge)
-		const is_ownership = frm.doc.handover_type === "Ownership Transfer";
-		frm.set_query("rental_item", () => ({
-			filters: {
-				disabled: 0,
-				is_stock_item: is_ownership ? 1 : 0,
-			},
-		}));
 	},
 
 	rental_contract(frm) {

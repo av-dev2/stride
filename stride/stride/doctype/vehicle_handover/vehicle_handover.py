@@ -31,7 +31,6 @@ class VehicleHandover(Document):
 		naming_series: DF.Literal["VH-.#####"]
 		odometer_reading: DF.Float | None
 		rental_contract: DF.Link
-		rental_item: DF.Link
 		vehicle: DF.Link | None
 		vehicle_condition: DF.Literal["Excellent", "Good", "Fair", "Poor"]
 	# end: auto-generated types
@@ -133,15 +132,28 @@ class VehicleHandover(Document):
 		}
 
 	def _create_stock_entry(self) -> None:
-		"""Create a Material Issue Stock Entry to remove vehicle from inventory (Ownership Transfer only)."""
+		"""Create a Material Issue Stock Entry to remove vehicle from inventory (Ownership Transfer only).
+
+		The item_code is read from the Vehicle's rental_item custom field, which should be
+		the stock Item representing this vehicle asset.
+		"""
 		vehicle_doc = frappe.get_doc("Vehicle", self.vehicle)
-		item_code = self.rental_item or vehicle_doc.get("item_code")
+		item_code = vehicle_doc.get("rental_item")
 		warehouse = vehicle_doc.get("warehouse")
 
-		if not item_code or not warehouse:
+		if not item_code:
+			frappe.throw(
+				_(
+					"Vehicle {0} does not have a <b>Rental Item (Asset)</b> configured. "
+					"Please set the stock item on the Vehicle record before creating an "
+					"Ownership Transfer handover."
+				).format(self.vehicle)
+			)
+
+		if not warehouse:
 			frappe.msgprint(
 				_(
-					"Vehicle {0} does not have Item Code or Warehouse configured. " "Skipping stock entry."
+					"Vehicle {0} does not have a Warehouse configured. " "Skipping stock entry."
 				).format(self.vehicle),
 				indicator="orange",
 			)

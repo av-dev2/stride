@@ -41,5 +41,23 @@
     "label": "GPS Tracker ID",
     "insert_after": "vehicle_status",
     "description": "IOPGPS device identifier"
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "rental_service",
+    "fieldtype": "Link",
+    "label": "Rental Service",
+    "insert_after": "gps_tracker_id",
+    "options": "Item",
+    "description": "Non-stock service Item used when generating Sales Invoices for lease payments on this vehicle."
+  },
+  {
+    "dt": "Vehicle",
+    "fieldname": "rental_item",
+    "fieldtype": "Link",
+    "label": "Rental Item (Asset)",
+    "insert_after": "rental_service",
+    "options": "Item",
+    "description": "Stock Item representing the vehicle asset. Used to create a Material Issue Stock Entry when ownership is transferred to a customer."
   }
 ]

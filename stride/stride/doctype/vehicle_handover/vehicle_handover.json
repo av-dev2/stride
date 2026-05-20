@@ -15,8 +15,6 @@
     "vehicle",
     "handover_section",
     "handover_type",
-    "rental_item",
-    "column_break_hand1",
     "handover_date",
     "vehicle_condition",
     "column_break_hand",
@@ -106,19 +104,6 @@
       "label": "Handover Type",
       "options": "Rental Return\nOwnership Transfer",
       "reqd": 1
-    },
-    {
-      "description": "For Rental Return: a non-stock service item. For Ownership Transfer: a stock item representing the vehicle asset.",
-      "fieldname": "rental_item",
-      "fieldtype": "Link",
-      "label": "Handover Item",
-      "options": "Item",
-      "reqd": 1
-    },
-    {
-      "fieldname": "column_break_hand1",
-      "fieldtype": "Column Break"
-    },
     {
       "default": "Today",
       "fieldname": "handover_date",
