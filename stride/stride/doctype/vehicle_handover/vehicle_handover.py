@@ -25,39 +25,50 @@ class VehicleHandover(Document):
 		handover_attachment: DF.Attach | None
 		handover_content: DF.TextEditor | None
 		handover_date: DF.Date
+		handover_type: DF.Literal["Rental Return", "Ownership Transfer"]
 		inspection_notes: DF.SmallText | None
 		lease: DF.Link
 		naming_series: DF.Literal["VH-.#####"]
 		odometer_reading: DF.Float | None
 		rental_contract: DF.Link
+		rental_item: DF.Link
 		vehicle: DF.Link | None
 		vehicle_condition: DF.Literal["Excellent", "Good", "Fair", "Poor"]
 	# end: auto-generated types
 
 	def validate(self) -> None:
-		self._validate_rent_to_own()
+		self._validate_ownership_transfer_contract()
 		self._validate_all_payments_paid()
 		self._render_handover_template()
 
 	def on_submit(self) -> None:
-		self._create_stock_entry()
-		self._set_vehicle_status("Owned by Client")
+		if self.handover_type == "Ownership Transfer":
+			self._create_stock_entry()
+			self._set_vehicle_status("Owned by Client")
+		else:
+			self._set_vehicle_status("Available")
 		self._set_contract_status("Completed")
 		self._set_lease_status("Completed")
 
 	def on_cancel(self) -> None:
-		self._reverse_stock_entry()
-		self._set_vehicle_status("Rented")
+		if self.handover_type == "Ownership Transfer":
+			self._reverse_stock_entry()
+			self._set_vehicle_status("Rented")
+		else:
+			self._set_vehicle_status("Rented")
 		self._set_contract_status("Active")
 		self._set_lease_status("Active")
 
-	def _validate_rent_to_own(self) -> None:
-		"""Block handover if the contract is not rent-to-own."""
+	def _validate_ownership_transfer_contract(self) -> None:
+		"""For Ownership Transfer handovers, block if the contract is not rent-to-own."""
+		if self.handover_type != "Ownership Transfer":
+			return
+
 		rent_to_own = frappe.db.get_value("Rental Contract", self.rental_contract, "rent_to_own")
 		if not rent_to_own:
 			frappe.throw(
 				_(
-					"Vehicle Handover can only be created for "
+					"Ownership Transfer handover can only be created for "
 					"<b>Rent to Own</b> contracts. "
 					"Contract {0} is a standard rental."
 				).format(self.rental_contract)
@@ -111,6 +122,7 @@ class VehicleHandover(Document):
 			"customer_name": self.customer_name,
 			"vehicle": self.vehicle,
 			"handover_date": self.handover_date,
+			"handover_type": self.handover_type,
 			"vehicle_condition": self.vehicle_condition,
 			"odometer_reading": self.odometer_reading,
 			"inspection_notes": self.inspection_notes,
@@ -121,9 +133,9 @@ class VehicleHandover(Document):
 		}
 
 	def _create_stock_entry(self) -> None:
-		"""Create a Material Issue Stock Entry to remove vehicle from inventory."""
+		"""Create a Material Issue Stock Entry to remove vehicle from inventory (Ownership Transfer only)."""
 		vehicle_doc = frappe.get_doc("Vehicle", self.vehicle)
-		item_code = vehicle_doc.get("item_code")
+		item_code = self.rental_item or vehicle_doc.get("item_code")
 		warehouse = vehicle_doc.get("warehouse")
 
 		if not item_code or not warehouse:
@@ -153,7 +165,7 @@ class VehicleHandover(Document):
 		se.submit()
 
 		frappe.msgprint(
-			_("Stock Entry {0} created for vehicle handover.").format(se.name),
+			_("Stock Entry {0} created for vehicle ownership transfer.").format(se.name),
 			indicator="green",
 		)
 

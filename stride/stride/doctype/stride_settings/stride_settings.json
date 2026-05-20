@@ -6,7 +6,6 @@
   "field_order": [
     "invoicing_section",
     "enable_auto_invoicing",
-    "rental_item",
     "invoicing_column_break",
     "enable_auto_reconciliation",
     "gps_section",
@@ -28,14 +27,6 @@
       "fieldname": "enable_auto_invoicing",
       "fieldtype": "Check",
       "label": "Enable Auto Invoicing"
-    },
-    {
-      "description": "The Item used in auto-generated Sales Invoices for rental payments. Income account and cost center are derived from this Item's defaults.",
-      "fieldname": "rental_item",
-      "fieldtype": "Link",
-      "label": "Rental Item",
-      "mandatory_depends_on": "eval:doc.enable_auto_invoicing",
-      "options": "Item"
     },
     {
       "fieldname": "invoicing_column_break",

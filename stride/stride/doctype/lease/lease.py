@@ -30,6 +30,7 @@ class Lease(Document):
 		period_type: DF.Literal["", "Daily", "Weekly", "Monthly", "Yearly"]
 		rate: DF.Currency
 		rental_contract: DF.Link
+		rental_service: DF.Link
 		start_date: DF.Date
 		status: DF.Literal["Active", "Completed", "Overdue", "Cancelled"]
 		total_amount: DF.Currency

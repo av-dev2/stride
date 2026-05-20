@@ -7,6 +7,14 @@ frappe.ui.form.on("Lease", {
 		frm.set_query("rental_contract", () => ({
 			filters: { docstatus: 1 },
 		}));
+
+		// Rental Service: must be a non-stock, enabled service item
+		frm.set_query("rental_service", () => ({
+			filters: {
+				disabled: 0,
+				is_stock_item: 0,
+			},
+		}));
 	},
 
 	refresh(frm) {

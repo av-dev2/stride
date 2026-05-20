@@ -11,8 +11,8 @@ from frappe.utils import getdate, today
 def generate_lease_invoices() -> None:
 	"""Daily scheduled job: create Sales Invoices for due Lease Payment Schedule rows.
 
-	Reads the `rental_item` from Stride Settings. Income account and cost center
-	are derived from the Item's defaults (multi-company safe).
+	Reads the `rental_service` from each Lease record. Income account and cost
+	center are derived from the Item's defaults (multi-company safe).
 
 	Only processes rows where:
 	- Lease is submitted (docstatus=1) and Active
@@ -25,13 +25,6 @@ def generate_lease_invoices() -> None:
 	if not settings.enable_auto_invoicing:
 		return
 
-	if not settings.rental_item:
-		frappe.log_error(
-			title="Stride Auto-Invoicing: Missing Rental Item",
-			message="Please configure the Rental Item in Stride Settings.",
-		)
-		return
-
 	due_rows = _get_due_schedule_rows()
 
 	if not due_rows:
@@ -42,7 +35,7 @@ def generate_lease_invoices() -> None:
 
 	for row in due_rows:
 		try:
-			_create_sales_invoice_for_row(row, settings.rental_item)
+			_create_sales_invoice_for_row(row)
 			created_count += 1
 		except Exception:
 			error_count += 1
@@ -79,14 +72,21 @@ def _get_due_schedule_rows() -> list[dict]:
 	)
 
 
-def _create_sales_invoice_for_row(row: dict, rental_item: str) -> None:
+def _create_sales_invoice_for_row(row: dict) -> None:
 	"""Create and submit a Sales Invoice for a single schedule row.
 
 	Args:
 	        row: Lease Payment Schedule row dict
-	        rental_item: Item code from Stride Settings
 	"""
 	lease = frappe.get_cached_doc("Lease", row.parent)
+
+	if not lease.rental_service:
+		frappe.throw(
+			_(
+				"Cannot create invoice: Lease {0} does not have a Rental Service configured. "
+				"Please set the Rental Service on the Lease."
+			).format(lease.name)
+		)
 
 	# Get company from the linked Rental Contract
 	company = frappe.db.get_value("Rental Contract", lease.rental_contract, "company")
@@ -105,7 +105,7 @@ def _create_sales_invoice_for_row(row: dict, rental_item: str) -> None:
 	si.append(
 		"items",
 		{
-			"item_code": rental_item,
+			"item_code": lease.rental_service,
 			"qty": 1,
 			"rate": row.amount,
 			"description": _("Rental payment for Vehicle {0} - Period {1} ({2} to {3})").format(
