@@ -17,8 +17,14 @@ def generate_lease_invoices() -> None:
 	Only processes rows where:
 	- Lease is submitted (docstatus=1) and Active
 	- Schedule row status is "Pending"
-	- Schedule row due_date <= today
+	- Schedule row due_date <= today  (scans from start of schedule, not just today)
 	- No Sales Invoice is already linked
+
+	Backfill behaviour:
+	  When a Rental Contract is finalised after the schedule start date, earlier
+	  periods whose due_date has already passed will still have no invoice.  This
+	  function intentionally scans the **entire** schedule from period 1 so that
+	  those past-due rows are caught and invoiced on the next run.
 	"""
 	settings = frappe.get_cached_doc("Stride Settings")
 
@@ -51,11 +57,34 @@ def generate_lease_invoices() -> None:
 
 
 def _get_due_schedule_rows() -> list[dict]:
-	"""Fetch Lease Payment Schedule rows that are due for invoicing."""
+	"""Fetch Lease Payment Schedule rows that are due for invoicing.
+
+	Scans from the **start** of every active schedule (period 1 onwards) so that
+	past-due rows created before the contract was finalised are also caught and
+	backfilled.  Only rows belonging to submitted, Active Leases are returned.
+	"""
+	# Collect IDs of submitted, Active Leases so we can scope the schedule query.
+	# Using a sub-select via get_all keeps us within the Frappe ORM (no raw SQL).
+	active_lease_names = frappe.db.get_all(
+		"Lease",
+		filters={
+			"docstatus": 1,
+			"status": "Active",
+		},
+		pluck="name",
+	)
+
+	if not active_lease_names:
+		return []
+
+	# Fetch ALL pending, un-invoiced rows whose due_date is on or before today,
+	# starting from period 1 of each schedule (the query has no lower-bound date
+	# filter so past periods are naturally included).
 	return frappe.db.get_all(
 		"Lease Payment Schedule",
 		filters={
 			"parenttype": "Lease",
+			"parent": ("in", active_lease_names),
 			"status": "Pending",
 			"due_date": ("<=", today()),
 			"sales_invoice": ("is", "not set"),
@@ -69,6 +98,7 @@ def _get_due_schedule_rows() -> list[dict]:
 			"due_date",
 			"amount",
 		],
+		order_by="parent asc, due_date asc",
 	)
 
 
@@ -107,7 +137,7 @@ def _create_sales_invoice_for_row(row: dict) -> None:
 	si = frappe.new_doc("Sales Invoice")
 	si.customer = lease.customer
 	si.company = company
-	si.posting_date = getdate(today())
+	si.posting_date = row.due_date or getdate(today())
 	si.due_date = row.due_date
 	si.set_posting_time = 1
 
