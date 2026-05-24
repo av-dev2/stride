@@ -39,6 +39,7 @@ function stride_render_payment_kpis(frm) {
 				Invoiced: { color: "#3498db", icon: "file" },
 				Paid: { color: "#2ecc71", icon: "check" },
 				Overdue: { color: "#e74c3c", icon: "alert-circle" },
+				Postponed: { color: "#9b59b6", icon: "pause" },
 			};
 
 			let cards_html = "";
@@ -126,17 +127,9 @@ function stride_render_payment_kpis(frm) {
 				</div>
 			`;
 
-			// Remove previous KPI section if exists (avoid duplicates on refresh)
-			$(frm.fields_dict.license_plate.wrapper)
-				.closest(".frappe-control")
-				.siblings(".stride-payment-kpis")
-				.remove();
-
-			// Insert after the form dashboard section
-			if (frm.dashboard.wrapper) {
-				frm.dashboard.wrapper.find(".stride-payment-kpis").remove();
-				frm.dashboard.wrapper.append(section_html);
-			}
+			// Remove previous KPI section and inject at top of form body
+			frm.layout.wrapper.find(".stride-payment-kpis").remove();
+			frm.layout.wrapper.find(".form-section").first().before(section_html);
 		},
 	});
 }
