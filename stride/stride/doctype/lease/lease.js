@@ -14,6 +14,7 @@ frappe.ui.form.on("Lease", {
 		if (frm.doc.docstatus === 1 && frm.doc.payment_schedule?.length) {
 			stride_render_lease_dashboard(frm);
 		}
+		stride_color_schedule_status(frm);
 	},
 
 	set_status_indicator(frm) {
@@ -32,6 +33,11 @@ frappe.ui.form.on("Lease", {
 });
 
 frappe.ui.form.on("Lease Payment Schedule", {
+	// Re-color when a row is expanded
+	form_render(frm) {
+		stride_color_schedule_status(frm);
+	},
+
 	postpone(frm, cdt, cdn) {
 		const row = locals[cdt][cdn];
 		frappe.confirm(
@@ -62,6 +68,28 @@ frappe.ui.form.on("Lease Payment Schedule", {
 		);
 	},
 });
+
+function stride_color_schedule_status(frm) {
+	const colors = {
+		Pending: "#f39c12",
+		Invoiced: "#3498db",
+		Paid: "#2ecc71",
+		Overdue: "#e74c3c",
+		Postponed: "#9b59b6",
+	};
+
+	const grid = frm.fields_dict.payment_schedule;
+	if (!grid) return;
+
+	grid.grid.wrapper
+		.find('[data-fieldname="status"] .static-area')
+		.each(function () {
+			const status = $(this).text().trim();
+			if (colors[status]) {
+				$(this).css({ color: colors[status], "font-weight": "600" });
+			}
+		});
+}
 
 function stride_render_lease_dashboard(frm) {
 	// Count schedule rows by status
