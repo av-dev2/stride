@@ -216,9 +216,6 @@ function stride_render_lease_dashboard(frm) {
 		</div>
 	`;
 
-	// Remove previous dashboard to avoid duplicates
-	if (frm.dashboard.wrapper) {
-		frm.dashboard.wrapper.find(".stride-lease-dashboard").remove();
-		frm.dashboard.wrapper.append(html);
-	}
+	frm.layout.wrapper.find(".stride-lease-dashboard").remove();
+	frm.layout.wrapper.find(".form-section").first().before(html);
 }
