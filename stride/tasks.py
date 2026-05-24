@@ -85,7 +85,7 @@ def _get_due_schedule_rows() -> list[dict]:
 		filters={
 			"parenttype": "Lease",
 			"parent": ("in", active_lease_names),
-			"status": "Pending",
+			"status": ("not in", ["Invoiced", "Paid", "Overdue", "Postponed"]),
 			"due_date": ("<=", today()),
 			"sales_invoice": ("is", "not set"),
 		},

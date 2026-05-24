@@ -181,9 +181,9 @@ class Lease(Document):
 			frappe.db.set_value("Rental Contract", self.rental_contract, "status", status)
 
 	def _cancel_unpaid_invoices(self) -> None:
-		"""Cancel Sales Invoices linked to unpaid schedule rows."""
+		"""Cancel Sales Invoices linked to unpaid / postponed schedule rows."""
 		for row in self.payment_schedule:
-			if row.sales_invoice and row.status in ("Pending", "Invoiced", "Overdue"):
+			if row.sales_invoice and row.status in ("Pending", "Invoiced", "Overdue", "Postponed"):
 				try:
 					si = frappe.get_doc("Sales Invoice", row.sales_invoice)
 					if si.docstatus == 1:
@@ -195,3 +195,53 @@ class Lease(Document):
 						title=f"Lease cancel: failed to cancel SI {row.sales_invoice}",
 						message=frappe.get_traceback(),
 					)
+
+
+@frappe.whitelist()
+def postpone_schedule_row(schedule_row_name: str) -> dict:
+	"""Postpone a Lease Payment Schedule row.
+
+	If a Sales Invoice is already linked:
+	- Cancels it if it is NOT in paid status (outstanding_amount > 0).
+	- Leaves it untouched if it has been fully paid.
+
+	Sets the row status to 'Postponed' in both cases (the invoice link is
+	cleared only when the invoice is cancelled).
+
+	Args:
+		schedule_row_name: The `name` of the Lease Payment Schedule child row.
+
+	Returns:
+		dict with keys `cancelled_invoice` (str|None) and `message` (str).
+	"""
+	row = frappe.get_doc("Lease Payment Schedule", schedule_row_name)
+
+	if row.status == "Paid":
+		frappe.throw(_("Cannot postpone a schedule row that has already been paid."))
+
+	cancelled_invoice = None
+
+	if row.sales_invoice:
+		si = frappe.get_doc("Sales Invoice", row.sales_invoice)
+
+		if flt(si.outstanding_amount) <= 0:
+			frappe.throw(_("Cannot postpone a schedule row that has already been paid."))
+
+		if si.docstatus == 1:
+			si.cancel()
+
+		cancelled_invoice = si.name
+		row.db_set("sales_invoice", None)
+
+		if si.docstatus != 1:
+			si.delete()
+
+	row.db_set("status", "Postponed")
+
+	return {
+		"cancelled_invoice": cancelled_invoice,
+		"message": _("Period {0} has been postponed.{1}").format(
+			row.period,
+			(" " + _("Invoice {0} was cancelled.").format(cancelled_invoice)) if cancelled_invoice else "",
+		),
+	}

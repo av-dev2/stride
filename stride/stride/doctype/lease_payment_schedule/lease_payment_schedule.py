@@ -22,7 +22,7 @@ class LeasePaymentSchedule(Document):
 		payment_entry: DF.Link | None
 		period: DF.Int
 		sales_invoice: DF.Link | None
-		status: DF.Literal["Pending", "Invoiced", "Paid", "Overdue"]
+		status: DF.Literal["Pending", "Invoiced", "Paid", "Overdue", "Postponed"]
 		to_date: DF.Date
 	# end: auto-generated types
 

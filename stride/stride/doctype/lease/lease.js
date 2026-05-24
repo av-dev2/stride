@@ -31,10 +31,48 @@ frappe.ui.form.on("Lease", {
 	},
 });
 
+frappe.ui.form.on("Lease Payment Schedule", {
+	postpone(frm, cdt, cdn) {
+		const row = locals[cdt][cdn];
+		frappe.confirm(
+			__(
+				"Postpone Period {0}? Any unpaid invoice linked to this period will be cancelled.",
+				[row.period]
+			),
+			() => {
+				frappe.call({
+					method: "stride.stride.doctype.lease.lease.postpone_schedule_row",
+					args: { schedule_row_name: cdn },
+					freeze: true,
+					freeze_message: __("Postponing period…"),
+					callback(r) {
+						if (!r.exc) {
+							frappe.show_alert(
+								{
+									message: r.message?.message || __("Period postponed"),
+									indicator: "orange",
+								},
+								5
+							);
+							frm.reload_doc();
+						}
+					},
+				});
+			}
+		);
+	},
+});
+
 function stride_render_lease_dashboard(frm) {
 	// Count schedule rows by status
-	const counts = { Pending: 0, Invoiced: 0, Paid: 0, Overdue: 0 };
-	const amounts = { Pending: 0, Invoiced: 0, Paid: 0, Overdue: 0 };
+	const counts = { Pending: 0, Invoiced: 0, Paid: 0, Overdue: 0, Postponed: 0 };
+	const amounts = {
+		Pending: 0,
+		Invoiced: 0,
+		Paid: 0,
+		Overdue: 0,
+		Postponed: 0,
+	};
 
 	(frm.doc.payment_schedule || []).forEach((row) => {
 		const s = row.status || "Pending";
@@ -51,6 +89,7 @@ function stride_render_lease_dashboard(frm) {
 		Invoiced: { color: "#3498db", label: "Invoiced" },
 		Pending: { color: "#f39c12", label: "Pending" },
 		Overdue: { color: "#e74c3c", label: "Overdue" },
+		Postponed: { color: "#9b59b6", label: "Postponed" },
 	};
 
 	// Build segmented progress bar
