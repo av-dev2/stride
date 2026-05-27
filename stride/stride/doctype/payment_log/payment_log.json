@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-05-27 21:34:06.958979",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "posting_date",
+  "posting_time",
+  "reconciled",
+  "column_break_kggr",
+  "paid_amount",
+  "payment_method",
+  "paid_to",
+  "column_break_tizs",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date",
+   "search_index": 1
+  },
+  {
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time",
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "reconciled",
+   "fieldtype": "Check",
+   "label": "Reconciled",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_kggr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "paid_amount",
+   "fieldtype": "Float",
+   "label": "Paid Amount",
+   "non_negative": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "payment_method",
+   "fieldtype": "Data",
+   "label": "Payment Method",
+   "search_index": 1
+  },
+  {
+   "fieldname": "paid_to",
+   "fieldtype": "Data",
+   "label": "Paid To",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_tizs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-05-27 21:41:14.442669",
+ "modified_by": "Administrator",
+ "module": "Stride",
+ "name": "Payment Log",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
