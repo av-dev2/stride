@@ -12,6 +12,7 @@ import {
 } from "frappe-ui";
 import router from "./router";
 import App from "./App.vue";
+import { session } from "./data/session";
 
 const app = createApp(App);
 
@@ -24,6 +25,19 @@ app.use(router);
 app.component("Button", Button);
 app.component("Badge", Badge);
 app.component("FeatherIcon", FeatherIcon);
+
+// Provide session globally so all views can inject("$session")
+app.provide("$session", session);
+
+// Register service worker (production only)
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+	navigator.serviceWorker
+		.register("/assets/stride/frontend/sw.js", { type: "classic" })
+		.then(() => console.log("[Stride] Service worker registered."))
+		.catch((err) =>
+			console.error("[Stride] Service worker registration failed:", err)
+		);
+}
 
 if (import.meta.env.DEV) {
 	frappeRequest({
