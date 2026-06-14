@@ -344,26 +344,36 @@
 
 							<!-- Lease summary strip -->
 							<div
-								class="bg-gray-50 rounded-xl p-3 grid grid-cols-3 gap-2 text-sm mt-1"
+								class="bg-blue-50 border border-blue-100 rounded-xl p-3 grid grid-cols-3 gap-2 text-sm mt-1"
 							>
 								<div class="text-left">
-									<p class="text-xs text-gray-400 font-medium">Rate</p>
-									<p class="font-semibold text-gray-800">
+									<p
+										class="text-[10px] text-blue-600 uppercase tracking-wider font-semibold"
+									>
+										Rate
+									</p>
+									<p class="font-bold text-blue-950 mt-0.5">
 										{{ formatCurrency(ctx.lease.rate) }} /
 										{{ ctx.lease.period_type }}
 									</p>
 								</div>
 								<div class="text-center">
-									<p class="text-xs text-gray-400 font-medium">
+									<p
+										class="text-[10px] text-blue-600 uppercase tracking-wider font-semibold"
+									>
 										Contract Start
 									</p>
-									<p class="font-semibold text-gray-800">
+									<p class="font-bold text-blue-950 mt-0.5">
 										{{ ctx.lease.start_date }}
 									</p>
 								</div>
 								<div class="text-right">
-									<p class="text-xs text-gray-400 font-medium">Contract End</p>
-									<p class="font-semibold text-gray-800">
+									<p
+										class="text-[10px] text-blue-600 uppercase tracking-wider font-semibold"
+									>
+										Contract End
+									</p>
+									<p class="font-bold text-blue-950 mt-0.5">
 										{{ ctx.lease.end_date }}
 									</p>
 								</div>
