@@ -1,5 +1,4 @@
 import { computed, reactive } from "vue";
-import { call } from "frappe-ui";
 import router from "@/router";
 
 /**
@@ -12,29 +11,61 @@ export function sessionUser() {
 	return !userId || userId === "Guest" ? null : userId;
 }
 
-function handleLoginResponse(response) {
-	if (response.message === "Logged In") {
-		session.user = sessionUser();
-		router.replace({ name: "Home" });
-	}
-}
-
 export const session = reactive({
 	user: sessionUser(),
 	isLoggedIn: computed(() => !!session.user),
 
-	/** Log in with email + password. Returns the raw Frappe response. */
+	/** Log in with email + password via a direct POST to Frappe's login endpoint. */
 	login: async (email, password) => {
-		const response = await call("login", { usr: email, pwd: password });
-		handleLoginResponse(response);
-		return response;
+		const csrfToken = window.csrf_token || window.boot?.csrf_token || "fetch";
+
+		const response = await fetch("/api/method/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json; charset=utf-8",
+				Accept: "application/json",
+				"X-Frappe-Site-Name": window.location.hostname,
+				"X-Frappe-CSRF-Token": csrfToken,
+			},
+			body: JSON.stringify({ usr: email, pwd: password }),
+		});
+
+		const data = await response.json();
+
+		if (!response.ok) {
+			// Build a readable error from Frappe's error shape
+			let messages = [];
+			if (data._server_messages) {
+				try {
+					messages = JSON.parse(data._server_messages).map((m) => {
+						try {
+							return JSON.parse(m).message;
+						} catch {
+							return m;
+						}
+					});
+				} catch {
+					/* ignore */
+				}
+			}
+			if (!messages.length && data.message) messages = [data.message];
+			if (!messages.length && data._error_message)
+				messages = [data._error_message];
+			throw new Error(messages.join(" ") || "Invalid email or password.");
+		}
+
+		if (data.message === "Logged In") {
+			session.user = sessionUser();
+			router.replace({ name: "Home" });
+		}
+
+		return data;
 	},
 
 	/** Log out and redirect to the login page. */
 	logout: async () => {
-		await call("logout");
+		await fetch("/api/method/logout", { method: "POST" });
 		session.user = null;
-		// Full reload so cookies are cleared cleanly
 		window.location.href = "/frontend/login";
 	},
 });
