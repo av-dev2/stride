@@ -318,21 +318,17 @@
 									</p>
 								</div>
 								<div>
-									<p class="text-xs text-gray-400 font-medium">Lease Period</p>
+									<p class="text-xs text-gray-400 font-medium">
+										Contract Start
+									</p>
 									<p class="font-semibold text-gray-800">
-										{{ ctx.lease.start_date }} → {{ ctx.lease.end_date }}
+										{{ ctx.lease.start_date }}
 									</p>
 								</div>
 								<div>
-									<p class="text-xs text-gray-400 font-medium">Total Paid</p>
-									<p class="font-semibold text-emerald-600">
-										{{ formatCurrency(ctx.lease.total_paid) }}
-									</p>
-								</div>
-								<div>
-									<p class="text-xs text-gray-400 font-medium">Outstanding</p>
-									<p class="font-semibold text-red-500">
-										{{ formatCurrency(ctx.lease.total_outstanding) }}
+									<p class="text-xs text-gray-400 font-medium">Contract End</p>
+									<p class="font-semibold text-gray-800">
+										{{ ctx.lease.end_date }}
 									</p>
 								</div>
 							</div>
