@@ -18,6 +18,12 @@ repos:
       - id: check-toml
       - id: debug-statements
 
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+        args: ["--line-length", "110"]
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.1
     hooks:
@@ -27,9 +33,6 @@ repos:
 
       - id: ruff
         name: "Run ruff linter"
-
-      - id: ruff-format
-        name: "Run ruff formatter"
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.7.1
@@ -68,7 +71,7 @@ repos:
     hooks:
       - id: frappe-semgrep-rules
         name: "Frappe Semgrep Security Rules"
-        entry: bash -c 'if [ ! -d frappe-semgrep-rules ]; then git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-rules; fi && semgrep scan --config ./frappe-semgrep-rules/rules --config r/python.lang.security --error --quiet "$@"' --
+        entry: bash -c 'if [ ! -d frappe-semgrep-rules/.git ]; then rm -rf frappe-semgrep-rules && GIT_TEMPLATE_DIR="" git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-rules; fi && semgrep scan --config ./frappe-semgrep-rules/rules --config r/python.lang.security --error --quiet "$@"' --
         language: system
         types: [python]
         pass_filenames: true
