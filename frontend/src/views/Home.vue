@@ -134,7 +134,7 @@
 						<button
 							id="stride-card-paid"
 							@click="openDetail('paid')"
-							class="group bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all duration-200 text-left"
+							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200 text-left"
 						>
 							<div
 								class="w-9 h-9 rounded-xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-colors"
@@ -156,20 +156,20 @@
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.paid.count }}
 							</p>
-							<p class="text-xs text-gray-500 mt-1 font-medium">Paid</p>
+							<p class="text-xs text-emerald-600 mt-1 font-semibold">Paid</p>
 						</button>
 
 						<!-- Pending (Invoiced) -->
 						<button
 							id="stride-card-pending"
 							@click="openDetail('invoiced')"
-							class="group bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-amber-200 transition-all duration-200 text-left"
+							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-red-500 shadow-sm hover:shadow-md hover:border-red-300 transition-all duration-200 text-left"
 						>
 							<div
-								class="w-9 h-9 rounded-xl bg-amber-50 group-hover:bg-amber-100 flex items-center justify-center mb-3 transition-colors"
+								class="w-9 h-9 rounded-xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center mb-3 transition-colors"
 							>
 								<svg
-									class="w-5 h-5 text-amber-600"
+									class="w-5 h-5 text-red-600"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -185,20 +185,20 @@
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.invoiced.count }}
 							</p>
-							<p class="text-xs text-gray-500 mt-1 font-medium">Pending</p>
+							<p class="text-xs text-red-600 mt-1 font-semibold">Pending</p>
 						</button>
 
 						<!-- Postponed -->
 						<button
 							id="stride-card-postponed"
 							@click="openDetail('postponed')"
-							class="group bg-white rounded-2xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-red-200 transition-all duration-200 text-left"
+							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-blue-900 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 text-left"
 						>
 							<div
-								class="w-9 h-9 rounded-xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center mb-3 transition-colors"
+								class="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mb-3 transition-colors"
 							>
 								<svg
-									class="w-5 h-5 text-red-500"
+									class="w-5 h-5 text-blue-900"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -214,7 +214,7 @@
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.postponed.count }}
 							</p>
-							<p class="text-xs text-gray-500 mt-1 font-medium">Postponed</p>
+							<p class="text-xs text-blue-900 mt-1 font-semibold">Postponed</p>
 						</button>
 					</div>
 				</section>
@@ -231,7 +231,7 @@
 					>
 						<!-- Vehicle image banner -->
 						<div
-							class="h-32 bg-gradient-to-r from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden"
+							class="h-32 bg-gray-50 flex items-center justify-center relative overflow-hidden border-b border-gray-100"
 						>
 							<img
 								v-if="ctx.vehicle.vehicle_image"
@@ -256,7 +256,7 @@
 							</div>
 							<!-- Vehicle Label badge (top left) -->
 							<span
-								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-900/80 text-white backdrop-blur shadow-sm"
+								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200/60 shadow-xs"
 							>
 								{{ vehicleLabel }}
 							</span>
