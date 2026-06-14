@@ -132,7 +132,7 @@
 					<!-- Progress Bar representing counts -->
 					<div
 						v-if="totalPayments > 0"
-						class="h-2 w-full bg-gray-100 rounded-full overflow-hidden flex mb-4"
+						class="h-2 w-full bg-gray-100 rounded-full overflow-hidden flex gap-[2px] mb-4"
 					>
 						<div
 							:style="{
@@ -299,7 +299,7 @@
 						</div>
 
 						<div class="p-4 space-y-3">
-							<div class="grid grid-cols-4 gap-2">
+							<div class="grid grid-cols-4 gap-2 divide-x divide-gray-100">
 								<div class="text-center">
 									<p
 										class="text-xs text-gray-400 uppercase tracking-wide font-medium"
