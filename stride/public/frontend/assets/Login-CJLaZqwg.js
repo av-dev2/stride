@@ -1,2 +1,247 @@
-import{E as e,F as t,Y as n,_ as r,c as i,g as a,gt as o,m as s,o as c,rt as l,t as u,y as d}from"./asyncToGenerator-COJlnFvb.js";var f={class:`min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4`},p={class:`w-full max-w-sm`},m={class:`bg-white rounded-2xl shadow-xl shadow-gray-100/80 border border-gray-100 p-8`},h={key:0,class:`flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg`},g={class:`text-sm text-red-700`},_=[`disabled`],v={key:0,class:`animate-spin w-4 h-4`,fill:`none`,viewBox:`0 0 24 24`},y={__name:`Login`,setup(y){let b=e(`$session`),x=l(``),S=l(``),C=l(!1),w=l(``);function T(){return E.apply(this,arguments)}function E(){return E=u(function*(){if(!x.value||!S.value){w.value=`Please enter your email and password.`;return}C.value=!0,w.value=``;try{yield b.login(x.value,S.value)}catch(e){let t=(e==null?void 0:e.messages)||(e==null?void 0:e.message);w.value=typeof t==`string`?t:Array.isArray(t)?t.join(` `):`Login failed. Please check your credentials and try again.`}finally{C.value=!1}}),E.apply(this,arguments)}return(e,l)=>(t(),r(`div`,f,[s(`div`,p,[l[7]||(l[7]=d(`<div class="text-center mb-10"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 shadow-lg shadow-blue-200 mb-4"><svg class="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></div><h1 class="text-2xl font-bold text-gray-900 tracking-tight">Stride</h1><p class="text-sm text-gray-500 mt-1">Vehicle Rental Portal</p></div>`,1)),s(`div`,m,[l[6]||(l[6]=s(`h2`,{class:`text-lg font-semibold text-gray-800 mb-6`},`Sign in to your account`,-1)),s(`form`,{onSubmit:i(T,[`prevent`]),class:`space-y-4`,novalidate:``},[s(`div`,null,[l[2]||(l[2]=s(`label`,{for:`stride-email`,class:`block text-sm font-medium text-gray-700 mb-1.5`},`Email`,-1)),n(s(`input`,{id:`stride-email`,"onUpdate:modelValue":l[0]||(l[0]=e=>x.value=e),type:`email`,autocomplete:`username`,placeholder:`you@example.com`,required:``,class:`w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`},null,512),[[c,x.value]])]),s(`div`,null,[l[3]||(l[3]=s(`label`,{for:`stride-password`,class:`block text-sm font-medium text-gray-700 mb-1.5`},`Password`,-1)),n(s(`input`,{id:`stride-password`,"onUpdate:modelValue":l[1]||(l[1]=e=>S.value=e),type:`password`,autocomplete:`current-password`,placeholder:`••••••••`,required:``,class:`w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`},null,512),[[c,S.value]])]),w.value?(t(),r(`div`,h,[l[4]||(l[4]=s(`svg`,{class:`w-4 h-4 text-red-500 mt-0.5 flex-shrink-0`,fill:`currentColor`,viewBox:`0 0 20 20`},[s(`path`,{"fill-rule":`evenodd`,d:`M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z`,"clip-rule":`evenodd`})],-1)),s(`p`,g,o(w.value),1)])):a(``,!0),s(`button`,{id:`stride-login-btn`,type:`submit`,disabled:C.value,class:`w-full mt-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-200 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2`},[C.value?(t(),r(`svg`,v,[...l[5]||(l[5]=[s(`circle`,{class:`opacity-25`,cx:`12`,cy:`12`,r:`10`,stroke:`currentColor`,"stroke-width":`4`},null,-1),s(`path`,{class:`opacity-75`,fill:`currentColor`,d:`M4 12a8 8 0 018-8v8z`},null,-1)])])):a(``,!0),s(`span`,null,o(C.value?`Signing in…`:`Sign In`),1)],8,_)],32)]),l[8]||(l[8]=s(`p`,{class:`text-center text-xs text-gray-400 mt-6`},`Powered by Stride Vehicle Rental Management`,-1))])]))}};export{y as default};
+import {
+	E as e,
+	F as t,
+	Y as n,
+	_ as r,
+	c as i,
+	g as a,
+	gt as o,
+	m as s,
+	o as c,
+	rt as l,
+	t as u,
+	y as d,
+} from "./asyncToGenerator-COJlnFvb.js";
+var f = {
+		class: `min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4`,
+	},
+	p = { class: `w-full max-w-sm` },
+	m = {
+		class: `bg-white rounded-2xl shadow-xl shadow-gray-100/80 border border-gray-100 p-8`,
+	},
+	h = {
+		key: 0,
+		class: `flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg`,
+	},
+	g = { class: `text-sm text-red-700` },
+	_ = [`disabled`],
+	v = {
+		key: 0,
+		class: `animate-spin w-4 h-4`,
+		fill: `none`,
+		viewBox: `0 0 24 24`,
+	},
+	y = {
+		__name: `Login`,
+		setup(y) {
+			let b = e(`$session`),
+				x = l(``),
+				S = l(``),
+				C = l(!1),
+				w = l(``);
+			function T() {
+				return E.apply(this, arguments);
+			}
+			function E() {
+				return (
+					(E = u(function* () {
+						if (!x.value || !S.value) {
+							w.value = `Please enter your email and password.`;
+							return;
+						}
+						(C.value = !0), (w.value = ``);
+						try {
+							yield b.login(x.value, S.value);
+						} catch (e) {
+							let t =
+								(e == null ? void 0 : e.messages) ||
+								(e == null ? void 0 : e.message);
+							w.value =
+								typeof t == `string`
+									? t
+									: Array.isArray(t)
+									? t.join(` `)
+									: `Login failed. Please check your credentials and try again.`;
+						} finally {
+							C.value = !1;
+						}
+					})),
+					E.apply(this, arguments)
+				);
+			}
+			return (e, l) => (
+				t(),
+				r(`div`, f, [
+					s(`div`, p, [
+						l[7] ||
+							(l[7] = d(
+								`<div class="text-center mb-10"><div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 shadow-lg shadow-blue-200 mb-4"><svg class="w-9 h-9 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg></div><h1 class="text-2xl font-bold text-gray-900 tracking-tight">Stride</h1><p class="text-sm text-gray-500 mt-1">Vehicle Rental Portal</p></div>`,
+								1
+							)),
+						s(`div`, m, [
+							l[6] ||
+								(l[6] = s(
+									`h2`,
+									{ class: `text-lg font-semibold text-gray-800 mb-6` },
+									`Sign in to your account`,
+									-1
+								)),
+							s(
+								`form`,
+								{
+									onSubmit: i(T, [`prevent`]),
+									class: `space-y-4`,
+									novalidate: ``,
+								},
+								[
+									s(`div`, null, [
+										l[2] ||
+											(l[2] = s(
+												`label`,
+												{
+													for: `stride-email`,
+													class: `block text-sm font-medium text-gray-700 mb-1.5`,
+												},
+												`Email`,
+												-1
+											)),
+										n(
+											s(
+												`input`,
+												{
+													id: `stride-email`,
+													"onUpdate:modelValue":
+														l[0] || (l[0] = (e) => (x.value = e)),
+													type: `email`,
+													autocomplete: `username`,
+													placeholder: `you@example.com`,
+													required: ``,
+													class: `w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`,
+												},
+												null,
+												512
+											),
+											[[c, x.value]]
+										),
+									]),
+									s(`div`, null, [
+										l[3] ||
+											(l[3] = s(
+												`label`,
+												{
+													for: `stride-password`,
+													class: `block text-sm font-medium text-gray-700 mb-1.5`,
+												},
+												`Password`,
+												-1
+											)),
+										n(
+											s(
+												`input`,
+												{
+													id: `stride-password`,
+													"onUpdate:modelValue":
+														l[1] || (l[1] = (e) => (S.value = e)),
+													type: `password`,
+													autocomplete: `current-password`,
+													placeholder: `••••••••`,
+													required: ``,
+													class: `w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-gray-900 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`,
+												},
+												null,
+												512
+											),
+											[[c, S.value]]
+										),
+									]),
+									w.value
+										? (t(),
+										  r(`div`, h, [
+												l[4] ||
+													(l[4] = s(
+														`svg`,
+														{
+															class: `w-4 h-4 text-red-500 mt-0.5 flex-shrink-0`,
+															fill: `currentColor`,
+															viewBox: `0 0 20 20`,
+														},
+														[
+															s(`path`, {
+																"fill-rule": `evenodd`,
+																d: `M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z`,
+																"clip-rule": `evenodd`,
+															}),
+														],
+														-1
+													)),
+												s(`p`, g, o(w.value), 1),
+										  ]))
+										: a(``, !0),
+									s(
+										`button`,
+										{
+											id: `stride-login-btn`,
+											type: `submit`,
+											disabled: C.value,
+											class: `w-full mt-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-200 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2`,
+										},
+										[
+											C.value
+												? (t(),
+												  r(`svg`, v, [
+														...(l[5] ||
+															(l[5] = [
+																s(
+																	`circle`,
+																	{
+																		class: `opacity-25`,
+																		cx: `12`,
+																		cy: `12`,
+																		r: `10`,
+																		stroke: `currentColor`,
+																		"stroke-width": `4`,
+																	},
+																	null,
+																	-1
+																),
+																s(
+																	`path`,
+																	{
+																		class: `opacity-75`,
+																		fill: `currentColor`,
+																		d: `M4 12a8 8 0 018-8v8z`,
+																	},
+																	null,
+																	-1
+																),
+															])),
+												  ]))
+												: a(``, !0),
+											s(
+												`span`,
+												null,
+												o(C.value ? `Signing in…` : `Sign In`),
+												1
+											),
+										],
+										8,
+										_
+									),
+								],
+								32
+							),
+						]),
+						l[8] ||
+							(l[8] = s(
+								`p`,
+								{ class: `text-center text-xs text-gray-400 mt-6` },
+								`Powered by Stride Vehicle Rental Management`,
+								-1
+							)),
+					]),
+				])
+			);
+		},
+	};
+export { y as default };
 //# sourceMappingURL=Login-CJLaZqwg.js.map
