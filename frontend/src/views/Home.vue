@@ -231,7 +231,7 @@
 					>
 						<!-- Vehicle image banner -->
 						<div
-							class="h-32 bg-gradient-to-r from-slate-700 to-slate-900 flex items-center justify-center relative overflow-hidden"
+							class="h-32 bg-gradient-to-r from-gray-700 to-gray-900 flex items-center justify-center relative overflow-hidden"
 						>
 							<img
 								v-if="ctx.vehicle.vehicle_image"
@@ -239,7 +239,7 @@
 								:alt="vehicleLabel"
 								class="object-cover w-full h-full opacity-80"
 							/>
-							<div v-else class="text-center text-slate-400">
+							<div v-else class="text-center text-gray-400">
 								<svg
 									class="w-14 h-14 mx-auto mb-1 opacity-50"
 									fill="none"
@@ -254,7 +254,13 @@
 									/>
 								</svg>
 							</div>
-							<!-- Status badge -->
+							<!-- Vehicle Label badge (top left) -->
+							<span
+								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-900/80 text-white backdrop-blur shadow-sm"
+							>
+								{{ vehicleLabel }}
+							</span>
+							<!-- Status badge (top right) -->
 							<span
 								class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full"
 								:class="vehicleStatusClass"
@@ -264,16 +270,17 @@
 						</div>
 
 						<div class="p-4 space-y-3">
-							<div>
-								<p class="text-lg font-bold text-gray-900">
-									{{ vehicleLabel }}
-								</p>
-								<p class="text-sm text-blue-600 font-semibold tracking-wider">
-									{{ ctx.vehicle.license_plate }}
-								</p>
-							</div>
-
-							<div class="grid grid-cols-3 gap-3">
+							<div class="grid grid-cols-4 gap-2">
+								<div class="text-center">
+									<p
+										class="text-xs text-gray-400 uppercase tracking-wide font-medium"
+									>
+										Reg No
+									</p>
+									<p class="text-sm font-semibold text-blue-600 mt-0.5">
+										{{ ctx.vehicle.license_plate }}
+									</p>
+								</div>
 								<div class="text-center">
 									<p
 										class="text-xs text-gray-400 uppercase tracking-wide font-medium"
@@ -308,16 +315,16 @@
 
 							<!-- Lease summary strip -->
 							<div
-								class="bg-gray-50 rounded-xl p-3 grid grid-cols-2 gap-3 text-sm mt-1"
+								class="bg-gray-50 rounded-xl p-3 grid grid-cols-3 gap-2 text-sm mt-1"
 							>
-								<div>
+								<div class="text-left">
 									<p class="text-xs text-gray-400 font-medium">Rate</p>
 									<p class="font-semibold text-gray-800">
 										{{ formatCurrency(ctx.lease.rate) }} /
 										{{ ctx.lease.period_type }}
 									</p>
 								</div>
-								<div>
+								<div class="text-center">
 									<p class="text-xs text-gray-400 font-medium">
 										Contract Start
 									</p>
@@ -325,7 +332,7 @@
 										{{ ctx.lease.start_date }}
 									</p>
 								</div>
-								<div>
+								<div class="text-right">
 									<p class="text-xs text-gray-400 font-medium">Contract End</p>
 									<p class="font-semibold text-gray-800">
 										{{ ctx.lease.end_date }}
@@ -411,12 +418,7 @@
 									>
 									<!-- Date display based on type -->
 									<p class="text-sm font-semibold text-gray-800 mt-0.5">
-										<template v-if="detail.type === 'paid'">
-											{{ row.from_date }} → {{ row.to_date }}
-										</template>
-										<template v-else>
-											{{ row.due_date }}
-										</template>
+										{{ row.due_date }}
 									</p>
 								</div>
 								<span class="text-sm font-bold text-gray-900">{{
