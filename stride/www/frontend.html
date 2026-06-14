@@ -11,19 +11,13 @@
     <link rel="modulepreload" crossorigin href="/assets/stride/frontend/assets/TooltipBubble-BfBzZZ5Q.js">
     <link rel="modulepreload" crossorigin href="/assets/stride/frontend/assets/debounce-dtZa6gl9.js">
     <link rel="stylesheet" crossorigin href="/assets/stride/frontend/assets/index-BLgSg4Ru.css">
-  <link rel="manifest" href="/assets/stride/frontend/manifest.webmanifest"></head>
+    <link rel="manifest" href="/assets/stride/frontend/manifest.webmanifest">
+  </head>
   <body>
     <div id="app"></div>
     <script>
       window.csrf_token = "{{ frappe.session.csrf_token }}";
       window.boot = {{ boot }};
     </script>
-
-          <script>
-              {% for key in boot %}
-              window["{{ key }}"] = {{ boot[key] | tojson }};
-              {% endfor %}
-          </script>
-          </body>
-
+  </body>
 </html>
