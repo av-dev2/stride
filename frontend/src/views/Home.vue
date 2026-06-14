@@ -129,18 +129,47 @@
 					>
 						Payment Summary
 					</h2>
+					<!-- Progress Bar representing counts -->
+					<div
+						v-if="totalPayments > 0"
+						class="h-2 w-full bg-gray-100 rounded-full overflow-hidden flex mb-4"
+					>
+						<div
+							:style="{
+								width: (ctx.payments.paid.count / totalPayments) * 100 + '%',
+							}"
+							class="h-full bg-green-500"
+							title="Paid"
+						/>
+						<div
+							:style="{
+								width:
+									(ctx.payments.invoiced.count / totalPayments) * 100 + '%',
+							}"
+							class="h-full bg-red-500"
+							title="Pending"
+						/>
+						<div
+							:style="{
+								width:
+									(ctx.payments.postponed.count / totalPayments) * 100 + '%',
+							}"
+							class="h-full bg-blue-900"
+							title="Postponed"
+						/>
+					</div>
 					<div class="grid grid-cols-3 gap-3">
 						<!-- Paid -->
 						<button
 							id="stride-card-paid"
 							@click="openDetail('paid')"
-							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-emerald-500 shadow-sm hover:shadow-md hover:border-emerald-300 transition-all duration-200 text-left"
+							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-green-600 shadow-sm hover:shadow-md hover:border-green-300 transition-all duration-200 text-left"
 						>
 							<div
-								class="w-9 h-9 rounded-xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center mb-3 transition-colors"
+								class="w-9 h-9 rounded-xl bg-green-100 group-hover:bg-green-200 flex items-center justify-center mb-3 transition-colors"
 							>
 								<svg
-									class="w-5 h-5 text-emerald-600"
+									class="w-5 h-5 text-green-600"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -156,7 +185,7 @@
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.paid.count }}
 							</p>
-							<p class="text-xs text-emerald-600 mt-1 font-semibold">Paid</p>
+							<p class="text-xs text-green-600 mt-1 font-semibold">Paid</p>
 						</button>
 
 						<!-- Pending (Invoiced) -->
@@ -166,7 +195,7 @@
 							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-red-500 shadow-sm hover:shadow-md hover:border-red-300 transition-all duration-200 text-left"
 						>
 							<div
-								class="w-9 h-9 rounded-xl bg-red-50 group-hover:bg-red-100 flex items-center justify-center mb-3 transition-colors"
+								class="w-9 h-9 rounded-xl bg-red-100 group-hover:bg-red-200 flex items-center justify-center mb-3 transition-colors"
 							>
 								<svg
 									class="w-5 h-5 text-red-600"
@@ -195,7 +224,7 @@
 							class="group bg-white rounded-2xl p-4 border border-gray-100 border-l-4 border-l-blue-900 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 text-left"
 						>
 							<div
-								class="w-9 h-9 rounded-xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center mb-3 transition-colors"
+								class="w-9 h-9 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center mb-3 transition-colors"
 							>
 								<svg
 									class="w-5 h-5 text-blue-900"
@@ -231,7 +260,7 @@
 					>
 						<!-- Vehicle image banner -->
 						<div
-							class="h-32 bg-gray-50 flex items-center justify-center relative overflow-hidden border-b border-gray-100"
+							class="h-32 bg-gradient-to-br from-blue-50/40 to-indigo-50/30 flex items-center justify-center relative overflow-hidden border-b border-gray-100"
 						>
 							<img
 								v-if="ctx.vehicle.vehicle_image"
@@ -239,9 +268,9 @@
 								:alt="vehicleLabel"
 								class="object-cover w-full h-full opacity-80"
 							/>
-							<div v-else class="text-center text-gray-400">
+							<div v-else class="text-center text-blue-400/80">
 								<svg
-									class="w-14 h-14 mx-auto mb-1 opacity-50"
+									class="w-14 h-14 mx-auto mb-1 opacity-70"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -256,7 +285,7 @@
 							</div>
 							<!-- Vehicle Label badge (top left) -->
 							<span
-								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200/60 shadow-xs"
+								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-blue-600 text-white shadow-sm"
 							>
 								{{ vehicleLabel }}
 							</span>
@@ -510,6 +539,16 @@ const pwaResource = createResource({
 });
 
 onMounted(() => pwaResource.fetch());
+
+// ── Payment helpers ──────────────────────────────────────────────
+const totalPayments = computed(() => {
+	if (!ctx.value?.payments) return 0;
+	return (
+		(ctx.value.payments.paid?.count || 0) +
+		(ctx.value.payments.invoiced?.count || 0) +
+		(ctx.value.payments.postponed?.count || 0)
+	);
+});
 
 // ── Vehicle helpers ──────────────────────────────────────────────
 const vehicleLabel = computed(() => {
