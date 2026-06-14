@@ -88,7 +88,7 @@ export default defineConfig(async ({ mode }) => {
 		frappeui({
 			frappeProxy: true,
 			lucideIcons: true,
-			jinjaBootData: true,
+			jinjaBootData: false,
 			buildConfig: {
 				indexHtmlPath: "../stride/www/frontend.html",
 				emptyOutDir: true,
