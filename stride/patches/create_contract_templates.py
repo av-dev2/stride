@@ -1,11 +1,11 @@
 import frappe
 
 TEMPLATES = [
-	{
-		"template_name": "Renting Agreement (English)",
-		"template_type": "Renting Agreement",
-		"is_default": 1,
-		"content": """
+    {
+        "template_name": "Renting Agreement (English)",
+        "template_type": "Renting Agreement",
+        "is_default": 1,
+        "content": """
 <div style="font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6;">
 
 <h2 style="text-align: center;">VEHICLE RENTING AGREEMENT</h2>
@@ -95,12 +95,12 @@ subject to reasonable wear and tear. Any outstanding payments shall remain due.<
 
 </div>
 """,
-	},
-	{
-		"template_name": "Renting Agreement (Swahili)",
-		"template_type": "Renting Agreement",
-		"is_default": 0,
-		"content": """
+    },
+    {
+        "template_name": "Renting Agreement (Swahili)",
+        "template_type": "Renting Agreement",
+        "is_default": 0,
+        "content": """
 <div style="font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6;">
 
 <h2 style="text-align: center;">MKATABA WA KUKODISHA GARI</h2>
@@ -190,12 +190,12 @@ ambayo hayajalipwa yatabaki kuwa deni.</p>
 
 </div>
 """,
-	},
-	{
-		"template_name": "Vehicle Handover (English)",
-		"template_type": "Vehicle Handover",
-		"is_default": 1,
-		"content": """
+    },
+    {
+        "template_name": "Vehicle Handover (English)",
+        "template_type": "Vehicle Handover",
+        "is_default": 1,
+        "content": """
 <div style="font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6;">
 
 <h2 style="text-align: center;">VEHICLE HANDOVER CERTIFICATE</h2>
@@ -262,12 +262,12 @@ upon completion of ownership transfer, unless otherwise agreed by both parties.<
 
 </div>
 """,
-	},
-	{
-		"template_name": "Vehicle Handover (Swahili)",
-		"template_type": "Vehicle Handover",
-		"is_default": 0,
-		"content": """
+    },
+    {
+        "template_name": "Vehicle Handover (Swahili)",
+        "template_type": "Vehicle Handover",
+        "is_default": 0,
+        "content": """
 <div style="font-family: Arial, sans-serif; font-size: 13px; line-height: 1.6;">
 
 <h2 style="text-align: center;">HATI YA KUKABIDHIWA GARI</h2>
@@ -335,19 +335,19 @@ wote watakubaliana vinginevyo.</p>
 
 </div>
 """,
-	},
+    },
 ]
 
 
 def execute() -> None:
-	"""Create default Contract Template records if they do not already exist."""
-	for template_data in TEMPLATES:
-		template_name = template_data["template_name"]
-		if frappe.db.exists("Contract Template", template_name):
-			continue
+    """Create default Contract Template records if they do not already exist."""
+    for template_data in TEMPLATES:
+        template_name = template_data["template_name"]
+        if frappe.db.exists("Contract Template", template_name):
+            continue
 
-		doc = frappe.new_doc("Contract Template")
-		doc.update(template_data)
-		doc.insert(ignore_permissions=True)
+        doc = frappe.new_doc("Contract Template")
+        doc.update(template_data)
+        doc.insert(ignore_permissions=True)
 
-	frappe.db.commit()
+    frappe.db.commit()
