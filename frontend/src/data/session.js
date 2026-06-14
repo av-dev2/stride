@@ -54,8 +54,8 @@ export const session = reactive({
 			throw new Error(messages.join(" ") || "Invalid email or password.");
 		}
 
-		if (data.message === "Logged In") {
-			session.user = sessionUser();
+		if (response.ok) {
+			session.user = sessionUser() || email;
 			router.replace({ name: "Home" });
 		}
 
