@@ -19,3 +19,4 @@ node_modules/
 
 # Frappe Semgrep rules (cloned locally by pre-commit hook)
 frappe-semgrep-rules/
+stride/public/node_modules
