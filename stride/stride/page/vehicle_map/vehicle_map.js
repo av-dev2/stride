@@ -218,7 +218,7 @@ class StrideVehicleMap {
 					<div>🕐 Last update: ${time_display}</div>
 					${alert_html}
 					<div style="margin-top: 8px;">
-						<a href="/app/vehicle/${loc.vehicle}" style="color: #2490ef;">
+						<a href="/desk/vehicle/${loc.vehicle}" style="color: #2490ef;">
 							Open Vehicle →
 						</a>
 					</div>
