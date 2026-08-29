@@ -117,7 +117,7 @@ function renderMarkers(locs) {
         <div>📡 Status: <strong style="color:${color};">${statusLabel}</strong></div>
         ${alertHtml}
         <div style="margin-top:8px;">
-          <a href="/app/vehicle/${loc.vehicle}"
+          <a href="/desk/vehicle/${loc.vehicle}"
              style="color:#2490ef;text-decoration:none;">
             Open Vehicle →
           </a>
