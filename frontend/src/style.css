@@ -1,22 +1,18 @@
 @import "frappe-ui/style.css";
 
 body {
-  margin: 0;
-  font-family:
-    system-ui,
-    "Segoe UI",
-    Roboto,
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 /* Leaflet z-index fix */
 .leaflet-pane {
-  z-index: 1;
+	z-index: 1;
 }
 
 .leaflet-top,
 .leaflet-bottom {
-  z-index: 2;
+	z-index: 2;
 }
