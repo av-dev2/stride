@@ -36,8 +36,8 @@ required_apps = ["erpnext"]
 doctype_js = {"Vehicle": "public/js/vehicle.js"}
 
 doctype_list_js = {
-    "Custom Field": "stride/patches/custom_fields/custom_field.js",
-    "Property Setter": "stride/patches/property_setter/property_setter.js",
+	"Custom Field": "stride/patches/custom_fields/custom_field.js",
+	"Property Setter": "stride/patches/property_setter/property_setter.js",
 }
 
 
@@ -51,8 +51,8 @@ after_install = "stride.setup.after_install"
 # Custom fields and property setters (hms_tz pattern) — Task 3
 
 after_migrate = [
-    "stride.patches.custom_fields.create_custom_fields.execute",
-    "stride.patches.property_setter.create_property_setters.execute",
+	"stride.patches.custom_fields.create_custom_fields.execute",
+	"stride.patches.property_setter.create_property_setters.execute",
 ]
 
 
@@ -60,32 +60,32 @@ after_migrate = [
 # ---------------
 
 doc_events = {
-    "Payment Entry": {
-        "on_submit": "stride.overrides.payment_entry.on_submit",
-        "on_cancel": "stride.overrides.payment_entry.on_cancel",
-    },
+	"Payment Entry": {
+		"on_submit": "stride.overrides.payment_entry.on_submit",
+		"on_cancel": "stride.overrides.payment_entry.on_cancel",
+	},
 }
 
 # Scheduled Tasks
 # ---------------
 
 scheduler_events = {
-    "daily": ["stride.tasks.generate_lease_invoices"],
-    "cron": {
-        "*/15 * * * *": ["stride.tasks.poll_gps_data"],
-    },
+	"daily": ["stride.tasks.generate_lease_invoices"],
+	"cron": {
+		"*/15 * * * *": ["stride.tasks.poll_gps_data"],
+	},
 }
 
 # Dashboard Overrides
 # -------------------
 
 override_doctype_dashboards = {
-    "Vehicle": "stride.overrides.vehicle_dashboard.get_data",
+	"Vehicle": "stride.overrides.vehicle_dashboard.get_data",
 }
 
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
 
 website_route_rules = [
-    {"from_route": "/frontend/<path:app_path>", "to_route": "frontend"},
+	{"from_route": "/frontend/<path:app_path>", "to_route": "frontend"},
 ]
