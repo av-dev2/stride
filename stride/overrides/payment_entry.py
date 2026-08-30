@@ -117,7 +117,7 @@ def _update_lease_totals(lease_name: str) -> None:
 				"parenttype": "Lease",
 				"status": "Paid",
 			},
-			fieldname="sum(amount)",
+			fieldname=[{"SUM": "amount"}],
 		)
 		or 0
 	)
