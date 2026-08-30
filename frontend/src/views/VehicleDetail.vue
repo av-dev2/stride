@@ -69,7 +69,7 @@
 					class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200/50 flex items-start justify-between gap-3"
 				>
 					<div class="min-w-0">
-						<p class="text-blue-100 text-sm font-medium mb-0.5">Customer</p>
+						<p class="text-blue-100 text-sm font-medium mb-0.5">Driver Name:</p>
 						<h1 class="text-xl font-bold tracking-tight truncate">
 							{{ ctx.customer_name }}
 						</h1>
@@ -81,7 +81,7 @@
 					<button
 						id="stride-make-payment-btn"
 						@click="openPaymentDialog"
-						class="flex-shrink-0 flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-colors"
+						class="flex-shrink-0 flex items-center gap-1.5 bg-green-500 hover:bg-green-400 text-white text-xs font-semibold px-3 py-2 rounded-xl shadow-sm shadow-green-900/20 transition-colors"
 					>
 						<FeatherIcon name="plus-circle" class="w-4 h-4" />
 						<span>Make Payment</span>
@@ -369,7 +369,7 @@
 							>
 								<FeatherIcon
 									name="check"
-									class="w-3 h-3 text-emerald-500 flex-shrink-0"
+									class="w-3 h-3 text-green-500 flex-shrink-0"
 								/>
 								<span class="text-xs text-gray-500">{{
 									row.payment_entry
@@ -566,14 +566,23 @@
 								}}
 								will be paid (oldest first)
 							</p>
-							<ul class="space-y-1">
+							<ul class="space-y-1.5">
 								<li
 									v-for="row in paymentPreview.invoices"
 									:key="row.name"
-									class="flex justify-between text-xs text-blue-900"
+									class="flex justify-between items-start text-xs text-blue-900"
 								>
-									<span>Period {{ row.period }} · {{ row.due_date }}</span>
-									<span>{{ formatCurrency(row.amount) }}</span>
+									<span>
+										Period {{ row.period }} · {{ row.due_date }}
+										<span
+											v-if="row.sales_invoice"
+											class="block text-blue-500"
+											>{{ row.sales_invoice }}</span
+										>
+									</span>
+									<span class="flex-shrink-0">{{
+										formatCurrency(row.amount)
+									}}</span>
 								</li>
 							</ul>
 							<p
@@ -665,7 +674,7 @@ const vehicleStatusClass = computed(() => {
 	const status = ctx.value?.vehicle?.vehicle_status;
 	if (!status) return "bg-gray-100 text-gray-600";
 	const map = {
-		Available: "bg-emerald-100 text-emerald-700",
+		Available: "bg-green-100 text-green-700",
 		Rented: "bg-blue-100 text-blue-700",
 		"Owned by Client": "bg-gray-200 text-gray-600",
 		Maintenance: "bg-amber-100 text-amber-700",
@@ -694,7 +703,7 @@ const DETAIL_CONFIG = {
 	paid: {
 		title: "Paid Payments",
 		icon: "✅",
-		iconBg: "bg-emerald-50",
+		iconBg: "bg-green-50",
 		rowsKey: "paid",
 	},
 	invoiced: {
