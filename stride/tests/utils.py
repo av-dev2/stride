@@ -70,6 +70,30 @@ def get_or_create_vehicle(license_plate: str, status: str = "Available") -> str:
 	return vehicle.name
 
 
+def get_or_create_rental_service_item(item_code: str = "Stride Test Rental Service") -> str:
+	if frappe.db.exists("Item", item_code):
+		return item_code
+
+	item_group = frappe.db.get_value("Item Group", {"is_group": 0}, "name") or "All Item Groups"
+	item = frappe.new_doc("Item")
+	item.item_code = item_code
+	item.item_group = item_group
+	item.is_stock_item = 0
+	item.stock_uom = "Nos"
+	item.insert(ignore_permissions=True)
+	return item.name
+
+
+def get_default_test_company() -> str:
+	"""A Company whose currency matches the site's global default, to avoid
+	Sales Invoice validation failing on a missing Currency Exchange record."""
+	currency = frappe.defaults.get_global_default("currency")
+	company = frappe.db.get_value("Company", {"default_currency": currency}, "name")
+	if not company:
+		frappe.throw(f"No Company found with default currency {currency}")
+	return company
+
+
 def make_rental_contract(vehicle: str, customer: str, **overrides):
 	contract = frappe.new_doc("Rental Contract")
 	contract.customer = customer
