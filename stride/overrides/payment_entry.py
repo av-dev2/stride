@@ -22,7 +22,7 @@ def on_submit(doc, method: str) -> None:
 	if not _is_auto_reconciliation_enabled():
 		return
 
-	_reconcile_lease_payments(doc)
+	reconcile_lease_payments(doc)
 
 
 def on_cancel(doc, method: str) -> None:
@@ -42,7 +42,7 @@ def _is_auto_reconciliation_enabled() -> bool:
 	return bool(frappe.db.get_single_value("Stride Settings", "enable_auto_reconciliation"))
 
 
-def _reconcile_lease_payments(payment_entry) -> None:
+def reconcile_lease_payments(payment_entry) -> None:
 	"""Mark schedule rows as Paid for invoices referenced in this Payment Entry."""
 	affected_leases = set()
 

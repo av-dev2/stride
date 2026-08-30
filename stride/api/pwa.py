@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import frappe
 from frappe import _
+from frappe.utils import flt, get_fullname, getdate, nowdate
 
 RENTAL_MANAGER_ROLE = "Rental Manager"
 
@@ -52,6 +53,7 @@ def get_pwa_context() -> dict:
 		return {
 			"error": "no_customer",
 			"is_manager": True,
+			"logged_in_user_name": get_fullname(user),
 			"message": _("Your account is not linked to a customer. Please contact your administrator."),
 		}
 
@@ -68,10 +70,11 @@ def get_pwa_context() -> dict:
 		return {
 			"error": "no_lease",
 			"customer": customer,
+			"logged_in_user_name": get_fullname(user),
 			"message": _("No active lease found for your account."),
 		}
 
-	return _build_lease_dashboard(leases[0])
+	return _build_lease_dashboard(leases[0], logged_in_user_name=get_fullname(user))
 
 
 @frappe.whitelist()
@@ -108,7 +111,7 @@ def get_manager_vehicles() -> dict:
 			}
 		)
 
-	return {"vehicles": rows}
+	return {"vehicles": rows, "logged_in_user_name": get_fullname(user)}
 
 
 @frappe.whitelist()
@@ -132,10 +135,11 @@ def get_vehicle_pwa_context(vehicle: str) -> dict:
 	if not leases:
 		return {
 			"error": "no_lease",
+			"logged_in_user_name": get_fullname(user),
 			"message": _("No active lease found for this vehicle."),
 		}
 
-	return _build_lease_dashboard(leases[0])
+	return _build_lease_dashboard(leases[0], logged_in_user_name=get_fullname(user))
 
 
 def _require_logged_in_user() -> str:
@@ -172,7 +176,7 @@ def _get_latest_lease_by_vehicle(vehicle_names: list[str]) -> dict:
 	return latest_by_vehicle
 
 
-def _build_lease_dashboard(lease) -> dict:
+def _build_lease_dashboard(lease, logged_in_user_name: str) -> dict:
 	"""Build the payments/vehicle/contract dashboard context for one Lease.
 
 	Flow:
@@ -258,6 +262,7 @@ def _build_lease_dashboard(lease) -> dict:
 	return {
 		"customer": lease.customer,
 		"customer_name": lease.customer_name,
+		"logged_in_user_name": logged_in_user_name,
 		"lease": lease,
 		"payments": payments,
 		"vehicle": vehicle_data,

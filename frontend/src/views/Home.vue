@@ -34,10 +34,10 @@
 
 				<div class="flex items-center gap-3">
 					<span
-						v-if="ctx?.customer_name"
+						v-if="ctx?.logged_in_user_name"
 						class="text-sm text-gray-600 font-medium hidden sm:inline"
 					>
-						{{ ctx.customer_name }}
+						{{ ctx.logged_in_user_name }}
 					</span>
 					<button
 						id="stride-logout-btn"
@@ -100,7 +100,7 @@
 				<div
 					class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200/50"
 				>
-					<p class="text-blue-100 text-sm font-medium mb-0.5">Welcome back,</p>
+					<p class="text-blue-100 text-sm font-medium mb-0.5">Customer</p>
 					<h1 class="text-xl font-bold tracking-tight">
 						{{ ctx.customer_name }}
 					</h1>

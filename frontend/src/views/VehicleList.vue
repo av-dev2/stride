@@ -20,14 +20,22 @@
 					>
 				</div>
 
-				<button
-					id="stride-logout-btn"
-					@click="logout"
-					class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
-				>
-					<FeatherIcon name="log-out" class="w-4 h-4" />
-					<span class="hidden sm:inline">Logout</span>
-				</button>
+				<div class="flex items-center gap-3">
+					<span
+						v-if="loggedInUserName"
+						class="text-sm text-gray-600 font-medium hidden sm:inline"
+					>
+						{{ loggedInUserName }}
+					</span>
+					<button
+						id="stride-logout-btn"
+						@click="logout"
+						class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
+					>
+						<FeatherIcon name="log-out" class="w-4 h-4" />
+						<span class="hidden sm:inline">Logout</span>
+					</button>
+				</div>
 			</div>
 		</header>
 
@@ -35,7 +43,7 @@
 			<div class="flex items-center justify-between">
 				<div>
 					<h1 class="text-lg font-bold text-gray-900 tracking-tight">
-						Fleet Vehicles
+						Vehicles
 					</h1>
 					<p class="text-xs text-gray-400 mt-0.5">
 						{{ vehicles.length }} vehicle{{ vehicles.length !== 1 ? "s" : "" }}
@@ -199,6 +207,9 @@ const router = useRouter();
 const loading = ref(true);
 const viewMode = ref("list");
 const vehicles = computed(() => vehiclesResource.data?.vehicles ?? []);
+const loggedInUserName = computed(
+	() => vehiclesResource.data?.logged_in_user_name
+);
 
 const vehiclesResource = createResource({
 	url: "stride.api.pwa.get_manager_vehicles",

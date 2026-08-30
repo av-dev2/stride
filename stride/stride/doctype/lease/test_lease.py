@@ -5,6 +5,8 @@ import frappe
 from frappe.tests import IntegrationTestCase
 from frappe.utils import add_days, getdate, today
 
+from stride.stride.doctype.lease.lease import postpone_schedule_row
+from stride.tests.test_payment_entry_reconciliation import make_active_lease_with_invoice
 from stride.tests.utils import get_or_create_customer, get_or_create_vehicle, make_rental_contract
 
 
@@ -69,3 +71,57 @@ class TestLease(IntegrationTestCase):
 		self.assertEqual(len(lease.payment_schedule), 3)
 		self.assertEqual(frappe.db.get_value("Vehicle", vehicle, "vehicle_status"), "Rented")
 		self.assertEqual(frappe.db.get_value("Rental Contract", contract.name, "status"), "Active")
+
+	def test_postpone_requires_manager_or_system_manager_role(self):
+		vehicle = get_or_create_vehicle("STRIDE-TEST-LS-005")
+		contract = make_rental_contract(vehicle, self.customer, duration=2)
+		contract.submit()
+
+		lease = make_lease(contract.name, vehicle)
+		lease.submit()
+		self.addCleanup(lambda: frappe.db.set_value("Lease", lease.name, "docstatus", 2))
+		row_name = lease.payment_schedule[0].name
+
+		user = "stride-lease-postpone-norole@example.com"
+		if not frappe.db.exists("User", user):
+			frappe.get_doc(
+				{
+					"doctype": "User",
+					"email": user,
+					"first_name": "Stride Postpone No Role",
+					"send_welcome_email": 0,
+				}
+			).insert(ignore_permissions=True)
+		self.addCleanup(frappe.set_user, "Administrator")
+
+		frappe.set_user(user)
+		with self.assertRaises(frappe.PermissionError):
+			postpone_schedule_row(row_name)
+
+	def test_postpone_allowed_for_manager_marks_row_postponed(self):
+		vehicle = get_or_create_vehicle("STRIDE-TEST-LS-006")
+		contract = make_rental_contract(vehicle, self.customer, duration=2)
+		contract.submit()
+
+		lease = make_lease(contract.name, vehicle)
+		lease.submit()
+		self.addCleanup(lambda: frappe.db.set_value("Lease", lease.name, "docstatus", 2))
+		row_name = lease.payment_schedule[0].name
+
+		result = postpone_schedule_row(row_name)
+		self.assertIsNone(result["cancelled_invoice"])
+
+		row = frappe.get_doc("Lease Payment Schedule", row_name)
+		self.assertEqual(row.status, "Postponed")
+
+	def test_postpone_cancels_and_deletes_linked_unpaid_invoice(self):
+		lease, row_name, sales_invoice = make_active_lease_with_invoice("POSTPONE")
+		self.addCleanup(lambda: frappe.db.set_value("Lease", lease.name, "docstatus", 2))
+
+		result = postpone_schedule_row(row_name)
+		self.assertEqual(result["cancelled_invoice"], sales_invoice)
+
+		row = frappe.get_doc("Lease Payment Schedule", row_name)
+		self.assertEqual(row.status, "Postponed")
+		self.assertFalse(row.sales_invoice)
+		self.assertFalse(frappe.db.exists("Sales Invoice", sales_invoice))

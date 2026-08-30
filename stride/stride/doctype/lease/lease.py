@@ -201,6 +201,9 @@ class Lease(Document):
 def postpone_schedule_row(schedule_row_name: str) -> dict:
 	"""Postpone a Lease Payment Schedule row.
 
+	Only users with the Rental Manager or System Manager role may postpone
+	a payment (System Manager keeps this available to existing desk users).
+
 	If a Sales Invoice is already linked:
 	- Cancels it if it is NOT in paid status (outstanding_amount > 0).
 	- Leaves it untouched if it has been fully paid.
@@ -214,6 +217,13 @@ def postpone_schedule_row(schedule_row_name: str) -> dict:
 	Returns:
 	        dict with keys `cancelled_invoice` (str|None) and `message` (str).
 	"""
+	allowed_roles = {"Rental Manager", "System Manager"}
+	if allowed_roles.isdisjoint(frappe.get_roles(frappe.session.user)):
+		frappe.throw(
+			_("You must have the Rental Manager role to postpone a payment."),
+			frappe.PermissionError,
+		)
+
 	row = frappe.get_doc("Lease Payment Schedule", schedule_row_name)
 
 	if row.status == "Paid":
@@ -234,7 +244,9 @@ def postpone_schedule_row(schedule_row_name: str) -> dict:
 		row.db_set("sales_invoice", None)
 
 		if si.docstatus != 1:
-			si.delete()
+			# force=True: a cancelled Sales Invoice is still linked to its own
+			# GL Entries, which would otherwise block the delete.
+			si.delete(force=True)
 
 	row.db_set("status", "Postponed")
 
