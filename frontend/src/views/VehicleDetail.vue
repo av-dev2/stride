@@ -10,23 +10,12 @@
 				class="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between"
 			>
 				<div class="flex items-center gap-2.5">
-					<div
-						class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-sm"
+					<router-link
+						:to="{ name: 'VehicleList' }"
+						class="text-gray-400 hover:text-gray-600 transition-colors p-1 -ml-1"
 					>
-						<svg
-							class="w-5 h-5 text-white"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
-							/>
-						</svg>
-					</div>
+						<FeatherIcon name="arrow-left" class="w-5 h-5" />
+					</router-link>
 					<span class="font-bold text-gray-900 text-base tracking-tight"
 						>Stride</span
 					>
@@ -44,19 +33,7 @@
 						@click="logout"
 						class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
 					>
-						<svg
-							class="w-4 h-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-							/>
-						</svg>
+						<FeatherIcon name="log-out" class="w-4 h-4" />
 						<span class="hidden sm:inline">Logout</span>
 					</button>
 				</div>
@@ -74,24 +51,15 @@
 				/>
 			</div>
 
-			<!-- Error / no customer -->
+			<!-- Error / no lease -->
 			<div
 				v-else-if="ctx?.error"
 				class="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center"
 			>
-				<svg
+				<FeatherIcon
+					name="alert-circle"
 					class="w-10 h-10 text-amber-400 mx-auto mb-3"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z"
-					/>
-				</svg>
+				/>
 				<p class="text-amber-800 font-medium">{{ ctx.message }}</p>
 			</div>
 
@@ -105,19 +73,7 @@
 						{{ ctx.customer_name }}
 					</h1>
 					<div class="mt-3 flex items-center gap-2 text-blue-100 text-xs">
-						<svg
-							class="w-3.5 h-3.5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-							stroke-width="2"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-							/>
-						</svg>
+						<FeatherIcon name="check-circle" class="w-3.5 h-3.5" />
 						<span>Lease {{ ctx.lease?.name }} · {{ ctx.lease?.status }}</span>
 					</div>
 				</div>
@@ -129,7 +85,6 @@
 					>
 						Payment Summary
 					</h2>
-					<!-- Progress Bar representing counts -->
 					<div
 						v-if="totalPayments > 0"
 						class="h-2 w-full bg-gray-100 rounded-full overflow-hidden flex gap-[2px] mb-4"
@@ -159,7 +114,6 @@
 						/>
 					</div>
 					<div class="grid grid-cols-3 gap-3">
-						<!-- Paid -->
 						<button
 							id="stride-card-paid"
 							@click="openDetail('paid')"
@@ -168,19 +122,10 @@
 							<div
 								class="w-9 h-9 rounded-xl bg-green-100 group-hover:bg-green-200 flex items-center justify-center mb-3 transition-colors"
 							>
-								<svg
+								<FeatherIcon
+									name="check-circle"
 									class="w-5 h-5 text-green-600"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
+								/>
 							</div>
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.paid.count }}
@@ -188,7 +133,6 @@
 							<p class="text-xs text-green-600 mt-1 font-semibold">Paid</p>
 						</button>
 
-						<!-- Pending (Invoiced) -->
 						<button
 							id="stride-card-pending"
 							@click="openDetail('invoiced')"
@@ -197,19 +141,7 @@
 							<div
 								class="w-9 h-9 rounded-xl bg-red-100 group-hover:bg-red-200 flex items-center justify-center mb-3 transition-colors"
 							>
-								<svg
-									class="w-5 h-5 text-red-600"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-									/>
-								</svg>
+								<FeatherIcon name="clock" class="w-5 h-5 text-red-600" />
 							</div>
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.invoiced.count }}
@@ -217,7 +149,6 @@
 							<p class="text-xs text-red-600 mt-1 font-semibold">Pending</p>
 						</button>
 
-						<!-- Postponed -->
 						<button
 							id="stride-card-postponed"
 							@click="openDetail('postponed')"
@@ -226,19 +157,7 @@
 							<div
 								class="w-9 h-9 rounded-xl bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center mb-3 transition-colors"
 							>
-								<svg
-									class="w-5 h-5 text-blue-900"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
-									/>
-								</svg>
+								<FeatherIcon name="pause" class="w-5 h-5 text-blue-900" />
 							</div>
 							<p class="text-2xl font-bold text-gray-900 leading-none">
 								{{ ctx.payments.postponed.count }}
@@ -253,12 +172,11 @@
 					<h2
 						class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3 px-1"
 					>
-						Your Vehicle
+						Vehicle
 					</h2>
 					<div
 						class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
 					>
-						<!-- Vehicle image banner -->
 						<div
 							class="h-32 bg-gradient-to-br from-blue-50/40 to-indigo-50/30 flex items-center justify-center relative overflow-hidden border-b border-gray-100"
 						>
@@ -268,28 +186,16 @@
 								:alt="vehicleLabel"
 								class="object-cover w-full h-full opacity-80"
 							/>
-							<div v-else class="text-center text-blue-400/80">
-								<svg
-									class="w-14 h-14 mx-auto mb-1 opacity-70"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="1.2"
-										d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0zM3 11l1.26-5.26A2 2 0 016.22 4h11.56a2 2 0 011.96 1.74L21 11M3 11h18M3 11l-.5 3H21.5L21 11"
-									/>
-								</svg>
-							</div>
-							<!-- Vehicle Label badge (top left) -->
+							<FeatherIcon
+								v-else
+								name="truck"
+								class="w-14 h-14 mx-auto opacity-70 text-blue-400/80"
+							/>
 							<span
 								class="absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full bg-blue-600 text-white shadow-sm"
 							>
 								{{ vehicleLabel }}
 							</span>
-							<!-- Status badge (top right) -->
 							<span
 								class="absolute top-3 right-3 text-xs font-semibold px-2.5 py-1 rounded-full"
 								:class="vehicleStatusClass"
@@ -342,7 +248,6 @@
 								</div>
 							</div>
 
-							<!-- Lease summary strip -->
 							<div
 								class="bg-blue-50 border border-blue-100 rounded-xl p-3 grid grid-cols-3 gap-2 text-sm mt-1"
 							>
@@ -390,17 +295,14 @@
 				v-if="detail.open"
 				class="fixed inset-0 z-50 flex items-end sm:items-center justify-center"
 			>
-				<!-- Backdrop -->
 				<div
 					class="absolute inset-0 bg-black/40 backdrop-blur-sm"
 					@click="detail.open = false"
 				/>
 
-				<!-- Sheet -->
 				<div
 					class="relative w-full max-w-lg bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl max-h-[85vh] flex flex-col"
 				>
-					<!-- Header -->
 					<div
 						class="flex items-center justify-between px-5 pt-5 pb-4 border-b border-gray-100 flex-shrink-0"
 					>
@@ -426,23 +328,10 @@
 							@click="detail.open = false"
 							class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-gray-200 transition-colors"
 						>
-							<svg
-								class="w-4 h-4"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								stroke-width="2.5"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M6 18L18 6M6 6l12 12"
-								/>
-							</svg>
+							<FeatherIcon name="x" class="w-4 h-4" />
 						</button>
 					</div>
 
-					<!-- Rows -->
 					<div class="overflow-y-auto flex-1 px-4 py-3 space-y-2">
 						<div
 							v-for="row in detail.rows"
@@ -455,7 +344,6 @@
 										class="text-xs font-bold text-gray-400 uppercase tracking-wide"
 										>Period {{ row.period }}</span
 									>
-									<!-- Date display based on type -->
 									<p class="text-sm font-semibold text-gray-800 mt-0.5">
 										{{ row.due_date }}
 									</p>
@@ -465,47 +353,27 @@
 								}}</span>
 							</div>
 
-							<!-- Paid: show payment entry ref -->
 							<div
 								v-if="detail.type === 'paid' && row.payment_entry"
 								class="flex items-center gap-1.5 mt-1"
 							>
-								<svg
+								<FeatherIcon
+									name="check"
 									class="w-3 h-3 text-emerald-500 flex-shrink-0"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9 12l2 2 4-4"
-									/>
-								</svg>
+								/>
 								<span class="text-xs text-gray-500">{{
 									row.payment_entry
 								}}</span>
 							</div>
 
-							<!-- Invoiced/Pending: show sales invoice ref -->
 							<div
 								v-if="detail.type === 'invoiced' && row.sales_invoice"
 								class="flex items-center gap-1.5 mt-1"
 							>
-								<svg
+								<FeatherIcon
+									name="file-text"
 									class="w-3 h-3 text-amber-500 flex-shrink-0"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									stroke-width="2"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-									/>
-								</svg>
+								/>
 								<span class="text-xs text-gray-500"
 									>Invoice: {{ row.sales_invoice }}</span
 								>
@@ -528,42 +396,31 @@
 <script setup>
 import { ref, reactive, computed, inject, onMounted } from "vue";
 import { createResource } from "frappe-ui";
-import { useRouter } from "vue-router";
+
+const props = defineProps({
+	vehicle: { type: String, required: true },
+});
 
 const session = inject("$session");
-const router = useRouter();
 
-// ── Data fetching ────────────────────────────────────────────────
 const loading = ref(true);
 const ctx = ref(null);
 
 const pwaResource = createResource({
-	url: "stride.api.pwa.get_pwa_context",
+	url: "stride.api.pwa.get_vehicle_pwa_context",
 	method: "GET",
 	auto: false,
 	onSuccess(data) {
-		if (data?.error === "no_customer" && data?.is_manager) {
-			router.replace({ name: "VehicleList" });
-			return;
-		}
 		ctx.value = data;
 		loading.value = false;
 	},
-	onError(error) {
-		ctx.value = {
-			error: "access_denied",
-			message:
-				error?.messages?.[0] ||
-				error?.message ||
-				"Unable to load your dashboard. Please contact your administrator.",
-		};
+	onError() {
 		loading.value = false;
 	},
 });
 
-onMounted(() => pwaResource.fetch());
+onMounted(() => pwaResource.fetch({ vehicle: props.vehicle }));
 
-// ── Payment helpers ──────────────────────────────────────────────
 const totalPayments = computed(() => {
 	if (!ctx.value?.payments) return 0;
 	return (
@@ -573,7 +430,6 @@ const totalPayments = computed(() => {
 	);
 });
 
-// ── Vehicle helpers ──────────────────────────────────────────────
 const vehicleLabel = computed(() => {
 	if (!ctx.value?.vehicle) return "—";
 	const v = ctx.value.vehicle;
@@ -586,14 +442,14 @@ const vehicleStatusClass = computed(() => {
 	const status = ctx.value?.vehicle?.vehicle_status;
 	if (!status) return "bg-gray-100 text-gray-600";
 	const map = {
-		Active: "bg-emerald-100 text-emerald-700",
-		"Out of Order": "bg-red-100 text-red-700",
-		Scrapped: "bg-gray-200 text-gray-600",
+		Available: "bg-emerald-100 text-emerald-700",
+		Rented: "bg-blue-100 text-blue-700",
+		"Owned by Client": "bg-gray-200 text-gray-600",
+		Maintenance: "bg-amber-100 text-amber-700",
 	};
 	return map[status] ?? "bg-blue-100 text-blue-700";
 });
 
-// ── Currency formatter ───────────────────────────────────────────
 function formatCurrency(value) {
 	if (value == null) return "—";
 	return new Intl.NumberFormat("en-US", {
@@ -602,7 +458,6 @@ function formatCurrency(value) {
 	}).format(value);
 }
 
-// ── Detail drawer ────────────────────────────────────────────────
 const detail = reactive({
 	open: false,
 	type: "",
@@ -644,7 +499,6 @@ function openDetail(type) {
 	detail.open = true;
 }
 
-// ── Logout ───────────────────────────────────────────────────────
 async function logout() {
 	await session.logout();
 }
