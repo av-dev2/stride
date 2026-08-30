@@ -10,6 +10,25 @@ from frappe import _
 def after_install() -> None:
 	"""Run after app installation on a site."""
 	_create_vehicle_accounting_dimension()
+	_create_rental_manager_role()
+
+
+def _create_rental_manager_role() -> None:
+	"""Create the Rental Manager role.
+
+	Users with this role can access the Stride PWA without being linked
+	to a Customer via Portal User.
+	"""
+	if frappe.db.exists("Role", "Rental Manager"):
+		return
+
+	frappe.get_doc(
+		{
+			"doctype": "Role",
+			"role_name": "Rental Manager",
+			"desk_access": 1,
+		}
+	).insert(ignore_permissions=True)
 
 
 def _create_vehicle_accounting_dimension() -> None:

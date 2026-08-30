@@ -10,12 +10,14 @@ def get_pwa_context() -> dict:
 
 	Flow:
 	  1. Resolve the logged-in user to a Customer via the Portal User child table.
+	     A user without a Customer link must have the Rental Manager role.
 	  2. Fetch the customer's active Lease (docstatus == 1).
 	  3. From the Lease's payment_schedule child table, count and list rows for:
 	     - Paid      (status == 'Paid')
 	     - Invoiced  (status == 'Invoiced')  ← shown as "Pending Payments" in UI
 	     - Postponed (status == 'Postponed')
 	     Rows with status == 'Pending' are intentionally excluded (no invoice yet).
+	     Rows are ordered newest period first (idx desc).
 	  4. Fetch Vehicle details linked to the Lease.
 	  5. Fetch the active Rental Contract for supplementary context.
 
@@ -31,6 +33,13 @@ def get_pwa_context() -> dict:
 	customer = frappe.db.get_value("Portal User", {"user": user}, "parent")
 
 	if not customer:
+		if "Rental Manager" not in frappe.get_roles(user):
+			frappe.throw(
+				_(
+					"Your account must be linked to a Customer or have the Rental Manager role to access this resource."
+				),
+				frappe.PermissionError,
+			)
 		return {
 			"error": "no_customer",
 			"message": _("Your account is not linked to a customer. Please contact your administrator."),
@@ -88,7 +97,7 @@ def get_pwa_context() -> dict:
 			"sales_invoice",
 			"payment_entry",
 		],
-		order_by="idx asc",
+		order_by="idx desc",
 	)
 
 	# Categorise rows
