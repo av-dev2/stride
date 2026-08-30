@@ -528,8 +528,10 @@
 <script setup>
 import { ref, reactive, computed, inject, onMounted } from "vue";
 import { createResource } from "frappe-ui";
+import { useRouter } from "vue-router";
 
 const session = inject("$session");
+const router = useRouter();
 
 // ── Data fetching ────────────────────────────────────────────────
 const loading = ref(true);
@@ -540,10 +542,21 @@ const pwaResource = createResource({
 	method: "GET",
 	auto: false,
 	onSuccess(data) {
+		if (data?.error === "no_customer" && data?.is_manager) {
+			router.replace({ name: "VehicleList" });
+			return;
+		}
 		ctx.value = data;
 		loading.value = false;
 	},
-	onError() {
+	onError(error) {
+		ctx.value = {
+			error: "access_denied",
+			message:
+				error?.messages?.[0] ||
+				error?.message ||
+				"Unable to load your dashboard. Please contact your administrator.",
+		};
 		loading.value = false;
 	},
 });
