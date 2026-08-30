@@ -100,7 +100,7 @@
 				<div
 					class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200/50"
 				>
-					<p class="text-blue-100 text-sm font-medium mb-0.5">Customer</p>
+					<p class="text-blue-100 text-sm font-medium mb-0.5">Driver Name:</p>
 					<h1 class="text-xl font-bold tracking-tight">
 						{{ ctx.customer_name }}
 					</h1>
@@ -471,7 +471,7 @@
 								class="flex items-center gap-1.5 mt-1"
 							>
 								<svg
-									class="w-3 h-3 text-emerald-500 flex-shrink-0"
+									class="w-3 h-3 text-green-500 flex-shrink-0"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
@@ -586,7 +586,7 @@ const vehicleStatusClass = computed(() => {
 	const status = ctx.value?.vehicle?.vehicle_status;
 	if (!status) return "bg-gray-100 text-gray-600";
 	const map = {
-		Active: "bg-emerald-100 text-emerald-700",
+		Active: "bg-green-100 text-green-700",
 		"Out of Order": "bg-red-100 text-red-700",
 		Scrapped: "bg-gray-200 text-gray-600",
 	};
@@ -616,7 +616,7 @@ const DETAIL_CONFIG = {
 	paid: {
 		title: "Paid Payments",
 		icon: "✅",
-		iconBg: "bg-emerald-50",
+		iconBg: "bg-green-50",
 		rowsKey: "paid",
 	},
 	invoiced: {
