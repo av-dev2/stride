@@ -18,6 +18,17 @@ const routes = [
 		name: "VehicleMap",
 		component: () => import("../views/VehicleMap.vue"),
 	},
+	{
+		path: "/vehicles",
+		name: "VehicleList",
+		component: () => import("../views/VehicleList.vue"),
+	},
+	{
+		path: "/vehicles/:vehicle",
+		name: "VehicleDetail",
+		component: () => import("../views/VehicleDetail.vue"),
+		props: true,
+	},
 ];
 
 const router = createRouter({
