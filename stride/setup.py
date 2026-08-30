@@ -35,6 +35,16 @@ def _create_vehicle_accounting_dimension() -> None:
 	dimension.document_type = "Vehicle"
 	dimension.insert(ignore_permissions=True)
 
+	# Accounting Dimension.on_update() enqueues the actual custom-field creation
+	# on the "long" queue. Run it synchronously too so a Vehicle-linked Sales
+	# Invoice/Payment Entry doesn't fail with "Unknown column 'vehicle'" when
+	# no background worker has processed that job yet (e.g. right after install).
+	from erpnext.accounts.doctype.accounting_dimension.accounting_dimension import (
+		make_dimension_in_accounting_doctypes,
+	)
+
+	make_dimension_in_accounting_doctypes(dimension)
+
 	frappe.msgprint(
 		_("Vehicle has been registered as an Accounting Dimension."),
 		indicator="green",
