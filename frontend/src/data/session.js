@@ -64,7 +64,16 @@ export const session = reactive({
 
 	/** Log out and redirect to the login page. */
 	logout: async () => {
-		await fetch("/api/method/logout", { method: "POST" });
+		const csrfToken = window.csrf_token || window.boot?.csrf_token || "fetch";
+
+		await fetch("/api/method/logout", {
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+				"X-Frappe-Site-Name": window.location.hostname,
+				"X-Frappe-CSRF-Token": csrfToken,
+			},
+		});
 		session.user = null;
 		window.location.href = "/frontend/login";
 	},
