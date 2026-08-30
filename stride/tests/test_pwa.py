@@ -33,6 +33,23 @@ class TestGetPwaContext(IntegrationTestCase):
 		result = get_pwa_context()
 		self.assertEqual(result["error"], "no_customer")
 
+	def test_user_without_customer_link_or_role_is_rejected(self):
+		user = "stride-pwa-no-role@example.com"
+		if not frappe.db.exists("User", user):
+			frappe.get_doc(
+				{
+					"doctype": "User",
+					"email": user,
+					"first_name": "Stride PWA No Role",
+					"send_welcome_email": 0,
+				}
+			).insert(ignore_permissions=True)
+		self.addCleanup(frappe.set_user, "Administrator")
+
+		frappe.set_user(user)
+		with self.assertRaises(frappe.PermissionError):
+			get_pwa_context()
+
 	def test_customer_without_lease_gets_no_lease_error(self):
 		customer = get_or_create_customer("Stride PWA Customer No Lease")
 		make_portal_user(customer, "Administrator")
