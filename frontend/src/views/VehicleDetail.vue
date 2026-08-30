@@ -566,20 +566,18 @@
 								}}
 								will be paid (oldest first)
 							</p>
-							<ul class="space-y-1.5">
+							<ul class="space-y-1">
 								<li
 									v-for="row in paymentPreview.invoices"
 									:key="row.name"
-									class="flex justify-between items-start text-xs text-blue-900"
+									class="flex justify-between items-center text-xs text-blue-900"
 								>
-									<span>
-										Period {{ row.period }} · {{ row.due_date }}
-										<span
-											v-if="row.sales_invoice"
-											class="block text-blue-500"
-											>{{ row.sales_invoice }}</span
-										>
-									</span>
+									<span
+										>{{ row.due_date }}
+										<span v-if="row.sales_invoice" class="text-blue-500"
+											>· {{ row.sales_invoice }}</span
+										></span
+									>
 									<span class="flex-shrink-0">{{
 										formatCurrency(row.amount)
 									}}</span>
@@ -633,6 +631,18 @@ const session = inject("$session");
 
 const loading = ref(true);
 const ctx = ref(null);
+
+function describeError(err, fallback) {
+	console.error(fallback, err);
+
+	if (err?.exc_type === "CSRFTokenError") {
+		return "Your session has expired. Please refresh the page and try again.";
+	}
+
+	const message = err?.messages?.[0] || err?.message || fallback;
+	// Frappe error messages sometimes embed <a> links meant for the desk UI.
+	return message.replace(/<[^>]+>/g, "");
+}
 
 const pwaResource = createResource({
 	url: "stride.api.pwa.get_vehicle_pwa_context",
@@ -764,8 +774,7 @@ async function confirmPostpone() {
 		await refreshContext();
 		if (detail.open) openDetail(detail.type);
 	} catch (err) {
-		postponeError.value =
-			err?.messages?.[0] || err?.message || "Failed to postpone this period.";
+		postponeError.value = describeError(err, "Failed to postpone this period.");
 	} finally {
 		postponing.value = false;
 	}
@@ -857,8 +866,7 @@ async function submitPayment() {
 		closePaymentDialog();
 		await refreshContext();
 	} catch (err) {
-		paymentError.value =
-			err?.messages?.[0] || err?.message || "Failed to create the payment.";
+		paymentError.value = describeError(err, "Failed to create the payment.");
 	} finally {
 		creatingPayment.value = false;
 	}
