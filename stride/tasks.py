@@ -141,7 +141,7 @@ def _create_sales_invoice_for_row(row: dict) -> None:
 	si.due_date = row.due_date
 	si.set_posting_time = 1
 
-	si.append(
+	item_row = si.append(
 		"items",
 		{
 			"item_code": rental_service,
@@ -157,6 +157,8 @@ def _create_sales_invoice_for_row(row: dict) -> None:
 	if lease.vehicle and hasattr(si, "vehicle"):
 		si.vehicle = lease.vehicle
 
+	_apply_item_tax_template(si, item_row, rental_service, company)
+
 	si.insert(ignore_permissions=True)
 	si.submit()
 
@@ -166,6 +168,42 @@ def _create_sales_invoice_for_row(row: dict) -> None:
 		row.name,
 		{"sales_invoice": si.name, "status": "Invoiced"},
 	)
+
+
+def _apply_item_tax_template(si, item_row, item_code: str, company: str) -> None:
+	"""Add Sales Taxes and Charges rows from the item's default Item Tax Template.
+
+	Building the invoice through the API (no client-side item lookup) never
+	populates `si.taxes`. csf_tz's VFD submit validation requires an itemised
+	tax breakup, which ERPNext only computes when `si.taxes` has rows, so a
+	zero-rate "exempt" item without this ends up rejected with a bare
+	"Taxes not set correctly" even though the item is correctly configured.
+	"""
+	if not frappe.get_meta("Item").has_field("default_tax_template"):
+		return
+
+	tax_template = frappe.get_value("Item", item_code, "default_tax_template")
+	if not tax_template:
+		return
+
+	item_row.item_tax_template = tax_template
+
+	template = frappe.get_cached_doc("Item Tax Template", tax_template)
+	for tax_row in template.taxes:
+		if tax_row.not_applicable:
+			continue
+		if frappe.get_cached_value("Account", tax_row.tax_type, "company") != company:
+			continue
+
+		si.append(
+			"taxes",
+			{
+				"charge_type": "On Net Total",
+				"account_head": tax_row.tax_type,
+				"rate": tax_row.tax_rate,
+				"description": tax_row.tax_type,
+			},
+		)
 
 
 def poll_gps_data() -> None:
