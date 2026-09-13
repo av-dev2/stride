@@ -109,3 +109,35 @@ def make_rental_contract(vehicle: str, customer: str, **overrides):
 	contract.update(overrides)
 	contract.insert(ignore_permissions=True)
 	return contract
+
+
+def get_or_create_gps_provider(provider_name: str = "Stride Test Provider", **overrides) -> str:
+	if frappe.db.exists("GPS Provider", provider_name):
+		return provider_name
+
+	provider = frappe.new_doc("GPS Provider")
+	provider.update(
+		{
+			"provider_name": provider_name,
+			"provider_type": "IOPGPS",
+			"authentication_type": "Signature",
+			"api_url": "https://open.iopgps.example",
+			"account_name": "testdemo",
+			"secret_key": "test-secret-key",
+			"polling_interval_minutes": 15,
+		}
+	)
+	provider.update(overrides)
+	provider.insert(ignore_permissions=True)
+	return provider.name
+
+
+def get_or_create_gps_tracker(imei: str, vehicle: str, provider: str, **overrides) -> str:
+	if frappe.db.exists("GPS Tracker", imei):
+		return imei
+
+	tracker = frappe.new_doc("GPS Tracker")
+	tracker.update({"imei": imei, "vehicle": vehicle, "gps_provider": provider, "is_active": 1})
+	tracker.update(overrides)
+	tracker.insert(ignore_permissions=True)
+	return tracker.name
