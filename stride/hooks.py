@@ -72,7 +72,8 @@ doc_events = {
 scheduler_events = {
 	"daily": ["stride.tasks.generate_lease_invoices"],
 	"cron": {
-		"*/15 * * * *": ["stride.tasks.poll_gps_data"],
+		"*/5 * * * *": ["stride.tasks.poll_gps_data"],
+		"0 * * * *": ["stride.tasks.refresh_gps_tokens"],
 	},
 }
 
