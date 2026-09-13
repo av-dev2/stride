@@ -5,6 +5,7 @@
 <script setup>
 import { ref, onMounted, watch, onBeforeUnmount, nextTick } from "vue";
 import L from "leaflet";
+import { getMarkerColor, getStatusLabel } from "../data/gps";
 
 const props = defineProps({
 	locations: {
@@ -36,17 +37,20 @@ L.Icon.Default.mergeOptions({
 		.href,
 });
 
-// Marker colors
-function getMarkerColor(loc) {
-	if (loc.alert_type) return "#e74c3c";
-	if (parseFloat(loc.speed || 0) > 2) return "#2ecc71";
-	return "#3498db";
-}
-
-function getStatusLabel(loc) {
-	if (loc.alert_type) return "Alert";
-	if (parseFloat(loc.speed || 0) > 2) return "Moving";
-	return "Idle";
+// Popup content is built as an HTML string, and the values come from a
+// whitelisted push endpoint, so every interpolation must be escaped.
+function escapeHtml(value) {
+	return String(value ?? "").replace(
+		/[&<>"']/g,
+		(char) =>
+			({
+				"&": "&amp;",
+				"<": "&lt;",
+				">": "&gt;",
+				'"': "&quot;",
+				"'": "&#39;",
+			}[char])
+	);
 }
 
 function initMap() {
@@ -98,26 +102,30 @@ function renderMarkers(locs) {
 		const speedDisplay = loc.speed
 			? `${parseFloat(loc.speed).toFixed(1)} km/h`
 			: "Stationary";
-		const alertHtml = loc.alert_type
-			? `<div style="color:#e74c3c;font-weight:600;margin-top:6px;">
-           ⚠️ ${loc.alert_type}: ${loc.alert_message || ""}
+		const alarmHtml = loc.alarm_code
+			? `<div style="color:#dc2626;font-weight:600;margin-top:6px;">
+           ${escapeHtml(loc.alarm_code)}${
+					loc.alarm_description ? `: ${escapeHtml(loc.alarm_description)}` : ""
+			  }
          </div>`
 			: "";
 
 		marker.bindPopup(`
       <div style="min-width:200px;font-size:13px;line-height:1.6;">
         <div style="font-weight:700;font-size:15px;margin-bottom:4px;">
-          ${loc.license_plate || loc.vehicle}
+          ${escapeHtml(loc.license_plate || loc.vehicle)}
         </div>
         <div style="color:#888;margin-bottom:6px;">
-          ${loc.make || ""} ${loc.model || ""}
+          ${escapeHtml(`${loc.make || ""} ${loc.model || ""}`.trim())}
         </div>
-        <div>📍 ${loc.address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`}</div>
-        <div>🏎️ ${speedDisplay}</div>
-        <div>📡 Status: <strong style="color:${color};">${statusLabel}</strong></div>
-        ${alertHtml}
+        <div>${
+					escapeHtml(loc.address) || `${lat.toFixed(5)}, ${lng.toFixed(5)}`
+				}</div>
+        <div>${speedDisplay}</div>
+        <div>Status: <strong style="color:${color};">${statusLabel}</strong></div>
+        ${alarmHtml}
         <div style="margin-top:8px;">
-          <a href="/desk/vehicle/${loc.vehicle}"
+          <a href="/desk/vehicle/${encodeURIComponent(loc.vehicle)}"
              style="color:#2490ef;text-decoration:none;">
             Open Vehicle →
           </a>
@@ -125,7 +133,7 @@ function renderMarkers(locs) {
       </div>
     `);
 
-		marker.bindTooltip(loc.license_plate || loc.vehicle, {
+		marker.bindTooltip(escapeHtml(loc.license_plate || loc.vehicle), {
 			permanent: false,
 			direction: "top",
 			offset: [0, -12],

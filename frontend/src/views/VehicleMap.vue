@@ -15,8 +15,8 @@
 				<Badge v-if="vehicleCount > 0" variant="subtle" theme="blue">
 					{{ vehicleCount }} vehicle{{ vehicleCount !== 1 ? "s" : "" }}
 				</Badge>
-				<Badge v-if="alertCount > 0" variant="subtle" theme="red">
-					{{ alertCount }} alert{{ alertCount !== 1 ? "s" : "" }}
+				<Badge v-if="alarmCount > 0" variant="subtle" theme="red">
+					{{ alarmCount }} alarm{{ alarmCount !== 1 ? "s" : "" }}
 				</Badge>
 			</div>
 
@@ -74,12 +74,17 @@
 					}"
 				>
 					<div class="flex items-center justify-between mb-1">
-						<span class="font-medium text-sm text-gray-900">
-							{{ statusEmoji(loc) }}
+						<span
+							class="flex items-center gap-2 font-medium text-sm text-gray-900"
+						>
+							<span
+								class="w-2 h-2 rounded-full flex-shrink-0"
+								:style="{ backgroundColor: getMarkerColor(loc) }"
+							/>
 							{{ loc.license_plate || loc.vehicle }}
 						</span>
-						<Badge v-if="loc.alert_type" variant="subtle" theme="red" size="sm">
-							Alert
+						<Badge v-if="loc.alarm_code" variant="subtle" theme="red" size="sm">
+							Alarm
 						</Badge>
 					</div>
 					<div class="text-xs text-gray-500">
@@ -111,6 +116,7 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { createResource } from "frappe-ui";
 import VehicleMapView from "../components/VehicleMapView.vue";
+import { getMarkerColor } from "../data/gps";
 
 const locations = ref([]);
 const loading = ref(false);
@@ -136,8 +142,8 @@ const vehicleLocations = createResource({
 
 // Computed
 const vehicleCount = computed(() => locations.value.length);
-const alertCount = computed(
-	() => locations.value.filter((l) => l.alert_type).length
+const alarmCount = computed(
+	() => locations.value.filter((l) => l.alarm_code).length
 );
 
 const filteredLocations = computed(() => {
@@ -167,12 +173,6 @@ function focusVehicle(loc) {
 
 function onVehicleSelected(vehicleName) {
 	selectedVehicle.value = vehicleName;
-}
-
-function statusEmoji(loc) {
-	if (loc.alert_type) return "🔴";
-	if (parseFloat(loc.speed || 0) > 2) return "🟢";
-	return "🔵";
 }
 
 function formatTimestamp(ts) {
