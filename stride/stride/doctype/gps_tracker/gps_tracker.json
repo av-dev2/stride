@@ -1,0 +1,146 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "field:imei",
+  "creation": "2026-09-13 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "imei",
+    "tracker_name",
+    "column_break_tracker",
+    "gps_provider",
+    "vehicle",
+    "is_active",
+    "device_section",
+    "device_type",
+    "sim_number",
+    "column_break_device",
+    "last_status",
+    "last_seen_on"
+  ],
+  "fields": [
+    {
+      "description": "Device identifier (IMEI) as registered with the provider",
+      "fieldname": "imei",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "IMEI",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "fieldname": "tracker_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Tracker Name"
+    },
+    {
+      "fieldname": "column_break_tracker",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "gps_provider",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "GPS Provider",
+      "options": "GPS Provider",
+      "reqd": 1,
+      "search_index": 1
+    },
+    {
+      "description": "Vehicle this tracker is fitted to. A vehicle may have several trackers.",
+      "fieldname": "vehicle",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Vehicle",
+      "options": "Vehicle",
+      "search_index": 1
+    },
+    {
+      "default": "1",
+      "description": "Inactive trackers are skipped by the polling job",
+      "fieldname": "is_active",
+      "fieldtype": "Check",
+      "label": "Is Active"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "device_section",
+      "fieldtype": "Section Break",
+      "label": "Device Information"
+    },
+    {
+      "fieldname": "device_type",
+      "fieldtype": "Data",
+      "label": "Device Type",
+      "read_only": 1
+    },
+    {
+      "fieldname": "sim_number",
+      "fieldtype": "Data",
+      "label": "SIM Number",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_device",
+      "fieldtype": "Column Break"
+    },
+    {
+      "description": "Last status reported by the provider",
+      "fieldname": "last_status",
+      "fieldtype": "Data",
+      "label": "Last Status",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_seen_on",
+      "fieldtype": "Datetime",
+      "label": "Last Seen On",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [
+    {
+      "link_doctype": "GPS Log",
+      "link_fieldname": "gps_tracker"
+    },
+    {
+      "link_doctype": "GPS Alarm",
+      "link_fieldname": "gps_tracker"
+    }
+  ],
+  "modified": "2026-09-13 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "GPS Tracker",
+  "naming_rule": "By fieldname",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "read": 1,
+      "report": 1,
+      "role": "Rental Manager"
+    }
+  ],
+  "search_fields": "tracker_name, vehicle",
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "tracker_name",
+  "track_changes": 1
+}

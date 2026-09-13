@@ -2,27 +2,30 @@
   "actions": [],
   "allow_rename": 0,
   "autoname": "hash",
-  "creation": "2024-01-01 00:00:00.000000",
+  "creation": "2026-09-13 00:00:00.000000",
   "doctype": "DocType",
   "engine": "InnoDB",
   "field_order": [
     "vehicle",
     "gps_tracker",
-    "timestamp",
-    "column_break_loc",
+    "column_break_alarm",
+    "alarm_code",
+    "alarm_description",
+    "alarm_time",
+    "location_section",
     "latitude",
     "longitude",
     "address",
-    "movement_section",
+    "column_break_location",
     "speed",
     "heading",
-    "column_break_mov",
-    "device_status",
-    "acc_status",
-    "device_section",
     "position_type",
-    "column_break_device",
-    "battery_percentage"
+    "battery_capacity",
+    "media_section",
+    "video_url",
+    "archive_url",
+    "column_break_media",
+    "image_urls"
   ],
   "fields": [
     {
@@ -42,28 +45,45 @@
       "options": "GPS Tracker"
     },
     {
-      "fieldname": "timestamp",
+      "fieldname": "column_break_alarm",
+      "fieldtype": "Column Break"
+    },
+    {
+      "description": "Raw alarm code reported by the provider",
+      "fieldname": "alarm_code",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Alarm Code",
+      "reqd": 1
+    },
+    {
+      "fieldname": "alarm_description",
+      "fieldtype": "Small Text",
+      "label": "Alarm Description"
+    },
+    {
+      "fieldname": "alarm_time",
       "fieldtype": "Datetime",
       "in_list_view": 1,
-      "label": "Timestamp",
+      "label": "Alarm Time",
       "reqd": 1,
       "search_index": 1
     },
     {
-      "fieldname": "column_break_loc",
-      "fieldtype": "Column Break"
+      "fieldname": "location_section",
+      "fieldtype": "Section Break",
+      "label": "Location"
     },
     {
       "fieldname": "latitude",
       "fieldtype": "Float",
-      "in_list_view": 1,
       "label": "Latitude",
       "precision": "6"
     },
     {
       "fieldname": "longitude",
       "fieldtype": "Float",
-      "in_list_view": 1,
       "label": "Longitude",
       "precision": "6"
     },
@@ -73,9 +93,8 @@
       "label": "Address"
     },
     {
-      "fieldname": "movement_section",
-      "fieldtype": "Section Break",
-      "label": "Movement"
+      "fieldname": "column_break_location",
+      "fieldtype": "Column Break"
     },
     {
       "fieldname": "speed",
@@ -89,42 +108,42 @@
       "label": "Heading"
     },
     {
-      "fieldname": "column_break_mov",
-      "fieldtype": "Column Break"
-    },
-    {
-      "description": "Provider status, such as driving, stationary, sleeping or offline",
-      "fieldname": "device_status",
-      "fieldtype": "Data",
-      "label": "Device Status"
-    },
-    {
-      "default": "0",
-      "description": "Ignition on",
-      "fieldname": "acc_status",
-      "fieldtype": "Check",
-      "label": "ACC Status"
-    },
-    {
-      "collapsible": 1,
-      "fieldname": "device_section",
-      "fieldtype": "Section Break",
-      "label": "Device"
-    },
-    {
-      "description": "GPS, LBS or WiFi",
       "fieldname": "position_type",
       "fieldtype": "Data",
       "label": "Position Type"
     },
     {
-      "fieldname": "column_break_device",
+      "fieldname": "battery_capacity",
+      "fieldtype": "Float",
+      "label": "Battery Capacity (%)"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "media_section",
+      "fieldtype": "Section Break",
+      "label": "Media"
+    },
+    {
+      "fieldname": "video_url",
+      "fieldtype": "Data",
+      "label": "Video URL",
+      "options": "URL"
+    },
+    {
+      "fieldname": "archive_url",
+      "fieldtype": "Data",
+      "label": "Archive URL",
+      "options": "URL"
+    },
+    {
+      "fieldname": "column_break_media",
       "fieldtype": "Column Break"
     },
     {
-      "fieldname": "battery_percentage",
-      "fieldtype": "Float",
-      "label": "Battery (%)"
+      "description": "One image URL per line",
+      "fieldname": "image_urls",
+      "fieldtype": "Small Text",
+      "label": "Image URLs"
     }
   ],
   "index_web_pages_for_search": 0,
@@ -132,7 +151,7 @@
   "modified": "2026-09-13 00:00:00.000000",
   "modified_by": "Administrator",
   "module": "Stride",
-  "name": "GPS Log",
+  "name": "GPS Alarm",
   "naming_rule": "Random",
   "owner": "Administrator",
   "permissions": [
@@ -154,8 +173,8 @@
       "role": "Rental Manager"
     }
   ],
-  "search_fields": "vehicle, device_status",
-  "sort_field": "timestamp",
+  "search_fields": "vehicle, alarm_code",
+  "sort_field": "alarm_time",
   "sort_order": "DESC",
   "states": [],
   "track_changes": 0
