@@ -1,277 +1,281 @@
 # Copyright (c) 2024, elius-dev and contributors
 # For license information, please see license.txt
 
-"""GPS API endpoint for receiving data from IOPGPS tracking platform."""
+"""Whitelisted GPS endpoints: on-demand provider queries and push ingestion."""
 
 import frappe
-import requests
 from frappe import _
-from frappe.utils import now_datetime
+
+from stride.gps.sync import (
+	create_gps_alarm,
+	create_gps_log,
+	sync_tracker_alarms,
+	to_system_datetime,
+	to_unix_seconds,
+)
+
+
+def get_tracker(tracker: str) -> "frappe.Document":
+	"""Return a tracker the current user may read, or raise."""
+	frappe.has_permission("GPS Tracker", "read", doc=tracker, throw=True)
+	return frappe.get_doc("GPS Tracker", tracker)
+
 
 # --------------------------------------------------------------------------
-# IOPGPS Polling Integration (Task 18)
+# On-demand provider queries
 # --------------------------------------------------------------------------
 
-IOPGPS_TOKEN_CACHE_KEY = "iopgps_access_token"
-IOPGPS_TOKEN_TTL = 90 * 60  # 90 minutes (token valid for 2h, refresh early)
+
+@frappe.whitelist()
+def get_device_detail(tracker: str) -> dict:
+	"""Return device, account and bound-vehicle details straight from the provider."""
+	doc = get_tracker(tracker)
+
+	return doc.get_client().get_device_detail(doc.imei)
 
 
-def _get_iopgps_token(settings: "frappe._dict") -> str:
-	"""Get a valid IOPGPS access_token, using cache when available.
+@frappe.whitelist()
+def get_device_status(tracker: str) -> dict:
+	"""Return the live status of one device: position, speed, heading, ignition and battery."""
+	doc = get_tracker(tracker)
 
-	The token is cached in Redis for 90 minutes (IOPGPS tokens expire after 2h).
+	devices = doc.get_client().get_device_status(imei=doc.imei)
+	return devices[0] if devices else {}
+
+
+@frappe.whitelist()
+def get_live_location(tracker: str) -> dict:
+	"""Return the reverse-geocoded live position of one device.
+
+	The provider forbids polling this endpoint, so it is only reachable on user
+	request and is never called by the scheduler.
 	"""
-	cached = frappe.cache.get_value(IOPGPS_TOKEN_CACHE_KEY)
-	if cached:
-		return cached
+	doc = get_tracker(tracker)
 
-	api_url = settings.gps_api_url.rstrip("/")
-	api_key = settings.get_password("gps_api_key")
+	return doc.get_client().get_device_location(doc.imei)
 
-	if not api_key:
-		frappe.throw(_("GPS API Key is not configured in Stride Settings."))
 
-	# IOPGPS authentication endpoint
-	auth_url = f"{api_url}/api/auth/login"
-	resp = requests.post(
-		auth_url,
-		json={"account": settings.gps_account or "", "password": api_key},
-		timeout=30,
+@frappe.whitelist()
+def get_track_history(
+	tracker: str, from_datetime: str, to_datetime: str, only_gps: bool = False
+) -> list[dict]:
+	"""Return the recorded trail of one device as map-ready points."""
+	doc = get_tracker(tracker)
+
+	points = doc.get_client().get_track_history(
+		doc.imei,
+		to_unix_seconds(from_datetime),
+		to_unix_seconds(to_datetime),
+		only_gps=only_gps,
 	)
-	resp.raise_for_status()
 
-	data = resp.json()
-	token = data.get("access_token") or data.get("token") or data.get("data", {}).get("access_token")
-
-	if not token:
-		frappe.throw(_("Failed to obtain IOPGPS access token. Response: {0}").format(str(data)))
-
-	frappe.cache.set_value(IOPGPS_TOKEN_CACHE_KEY, token, expires_in_sec=IOPGPS_TOKEN_TTL)
-	return token
-
-
-def _fetch_device_locations(api_url: str, token: str) -> list[dict]:
-	"""Fetch real-time locations for all devices from IOPGPS API."""
-	url = f"{api_url.rstrip('/')}/api/device/location"
-	resp = requests.get(
-		url,
-		params={"access_token": token},
-		timeout=30,
-	)
-	resp.raise_for_status()
-
-	data = resp.json()
-	# IOPGPS may return data under "data", "list", or at top level
-	if isinstance(data, list):
-		return data
-	if isinstance(data, dict):
-		return data.get("data") or data.get("list") or []
-	return []
-
-
-def poll_iopgps_locations() -> dict:
-	"""Poll IOPGPS API for all device locations and create GPS Log records.
-
-	Called by the scheduled cron job (every N minutes).
-	Matches IOPGPS devices to Vehicles via the `gps_tracker_id` custom field.
-
-	Returns:
-	    dict with created count and errors
-	"""
-	settings = frappe.get_cached_doc("Stride Settings")
-
-	if not settings.gps_api_url:
-		frappe.log_error(
-			title=_("GPS Polling: Missing API URL"),
-			message=_("Please configure the GPS API URL in Stride Settings."),
-		)
-		return {"created": 0, "errors": ["Missing GPS API URL"]}
-
-	# Build a mapping of tracker_id → vehicle_name for fast lookup
-	tracker_map = _build_tracker_map()
-
-	if not tracker_map:
-		frappe.logger("stride").info("GPS Polling: No vehicles with gps_tracker_id configured.")
-		return {"created": 0, "errors": []}
-
-	try:
-		token = _get_iopgps_token(settings)
-		devices = _fetch_device_locations(settings.gps_api_url, token)
-	except Exception:
-		frappe.log_error(
-			title=_("GPS Polling: API Error"),
-			message=frappe.get_traceback(),
-		)
-		return {"created": 0, "errors": ["API request failed"]}
-
-	created = 0
-	errors = []
-
-	for device in devices:
-		try:
-			created += _process_device_location(device, tracker_map)
-		except Exception as e:
-			errors.append(str(e))
-
-	if created:
-		frappe.logger("stride").info(f"GPS Polling: {created} GPS Log records created.")
-
-	return {"created": created, "errors": errors}
-
-
-def _build_tracker_map() -> dict[str, str]:
-	"""Build a mapping of gps_tracker_id → vehicle name."""
-	vehicles = frappe.db.get_all(
-		"Vehicle",
-		filters={"gps_tracker_id": ("is", "set")},
-		fields=["name", "gps_tracker_id"],
-	)
-	return {v.gps_tracker_id: v.name for v in vehicles}
-
-
-def _process_device_location(device: dict, tracker_map: dict) -> int:
-	"""Process a single device location record from IOPGPS.
-
-	Args:
-	    device: Raw device dict from IOPGPS API
-	    tracker_map: gps_tracker_id → vehicle_name mapping
-
-	Returns:
-	    1 if a GPS Log was created, 0 otherwise
-	"""
-	# IOPGPS may use imei, deviceId, or id as the device identifier
-	device_id = str(device.get("imei") or device.get("deviceId") or device.get("id") or "")
-	if not device_id or device_id not in tracker_map:
-		return 0
-
-	vehicle_name = tracker_map[device_id]
-
-	lat = device.get("lat") or device.get("latitude")
-	lng = device.get("lng") or device.get("longitude")
-
-	if not lat or not lng:
-		return 0
-
-	# Parse timestamp — IOPGPS may return seconds or ISO string
-	raw_ts = device.get("gpsTime") or device.get("timestamp") or device.get("positionTime")
-	if isinstance(raw_ts, int | float):
-		from datetime import datetime
-
-		timestamp = datetime.fromtimestamp(raw_ts).strftime("%Y-%m-%d %H:%M:%S")
-	elif raw_ts:
-		timestamp = str(raw_ts)
-	else:
-		timestamp = now_datetime()
-
-	# Dedup: skip if we already have a GPS Log for this vehicle+timestamp
-	if frappe.db.exists("GPS Log", {"vehicle": vehicle_name, "timestamp": timestamp}):
-		return 0
-
-	gps_log = frappe.new_doc("GPS Log")
-	gps_log.update(
+	return [
 		{
-			"vehicle": vehicle_name,
-			"timestamp": timestamp,
-			"latitude": float(lat),
-			"longitude": float(lng),
-			"speed": float(device.get("speed") or 0),
-			"heading": float(device.get("course") or device.get("heading") or 0),
-			"address": device.get("address") or "",
-			"alert_type": device.get("alarmType") or device.get("alert_type") or "",
-			"alert_message": device.get("alarmData") or device.get("alert_message") or "",
+			"timestamp": to_system_datetime(point.get("gpsTime")),
+			"latitude": frappe.utils.flt(point.get("lat")),
+			"longitude": frappe.utils.flt(point.get("lng")),
+			"speed": frappe.utils.flt(point.get("speed")),
+			"heading": frappe.utils.flt(point.get("course")),
+			"position_type": point.get("positionType") or "",
+			"acc_status": 1 if point.get("accStatus") else 0,
 		}
+		for point in points
+	]
+
+
+@frappe.whitelist()
+def get_mileage(tracker: str, from_datetime: str, to_datetime: str) -> dict:
+	"""Return distance travelled and running time for one device over a period."""
+	doc = get_tracker(tracker)
+
+	return doc.get_client().get_mileage(
+		doc.imei, to_unix_seconds(from_datetime), to_unix_seconds(to_datetime)
 	)
-	gps_log.insert(ignore_permissions=True)
-	return 1
+
+
+@frappe.whitelist()
+def get_locations_by_user(
+	provider: str, account_id: str | None = None, include_sub: bool = True
+) -> list[dict]:
+	"""Return bare device positions for an account, used to reconcile unregistered devices."""
+	frappe.has_permission("GPS Provider", "read", doc=provider, throw=True)
+	doc = frappe.get_doc("GPS Provider", provider)
+
+	return doc.get_client().get_locations_by_organization(
+		account_id or doc.account_id, include_sub=include_sub
+	)
+
+
+@frappe.whitelist()
+def get_vehicle_locations(provider: str, account_id: str | None = None) -> dict:
+	"""Return provider-side vehicle positions keyed by number plate (Vehicle Location 2.0)."""
+	frappe.has_permission("GPS Provider", "read", doc=provider, throw=True)
+	doc = frappe.get_doc("GPS Provider", provider)
+
+	return doc.get_client().get_vehicle_locations(account_id or doc.account_id)
+
+
+@frappe.whitelist()
+def get_vehicle_status(vehicle: str, provider: str | None = None) -> list[dict]:
+	"""Return provider-side device status for a vehicle, looked up by its number plate."""
+	frappe.has_permission("Vehicle", "read", doc=vehicle, throw=True)
+
+	license_plate = frappe.db.get_value("Vehicle", vehicle, "license_plate") or vehicle
+	provider = provider or frappe.db.get_value(
+		"GPS Tracker", {"vehicle": vehicle, "is_active": 1}, "gps_provider", order_by="creation asc"
+	)
+
+	if not provider:
+		frappe.throw(_("No GPS Provider is configured for Vehicle {0}.").format(vehicle))
+
+	return frappe.get_doc("GPS Provider", provider).get_client().get_vehicle_status(license_plate)
+
+
+# --------------------------------------------------------------------------
+# Ingestion
+# --------------------------------------------------------------------------
+
+
+@frappe.whitelist(methods=["POST"])
+def pull_alarms(tracker: str, from_datetime: str, to_datetime: str) -> dict:
+	"""Fetch alarm records for a tracker and store the new ones as GPS Alarms."""
+	frappe.has_permission("GPS Alarm", "create", throw=True)
+	get_tracker(tracker)
+
+	return sync_tracker_alarms(tracker, from_datetime, to_datetime)
+
+
+@frappe.whitelist(methods=["POST"])
+def poll_now(provider: str) -> dict:
+	"""Refresh positions for one provider immediately, ignoring its polling interval."""
+	frappe.only_for("System Manager")
+
+	from stride.gps.sync import sync_provider_positions
+
+	return sync_provider_positions(provider)
 
 
 @frappe.whitelist(methods=["POST"])
 def receive_gps_data(
-	vehicle: str,
-	timestamp: str,
+	imei: str,
+	timestamp: int | None = None,
 	latitude: float | None = None,
 	longitude: float | None = None,
 	speed: float | None = None,
 	heading: float | None = None,
 	address: str | None = None,
-	alert_type: str | None = None,
-	alert_message: str | None = None,
+	device_status: str | None = None,
+	acc_status: bool | None = None,
+	alarm_code: str | None = None,
+	alarm_message: str | None = None,
 ) -> dict:
-	"""Receive GPS data from IOPGPS and create a GPS Log record.
+	"""Accept one position push from a tracking device.
 
 	Endpoint: POST /api/method/stride.api.gps.receive_gps_data
 
-	Args:
-	        vehicle: Vehicle name (license plate)
-	        timestamp: ISO datetime string
-	        latitude: GPS latitude coordinate
-	        longitude: GPS longitude coordinate
-	        speed: Vehicle speed in km/h
-	        heading: Compass heading in degrees
-	        address: Reverse-geocoded address
-	        alert_type: IOPGPS alert type (e.g. "overspeed", "geofence")
-	        alert_message: Alert details
-
-	Returns:
-	        dict with created GPS Log name
+	Timestamps are unix seconds, matching the provider convention. An alarm_code
+	turns the payload into a GPS Alarm as well as a position sample.
 	"""
-	if not frappe.db.exists("Vehicle", vehicle):
-		frappe.throw(_("Vehicle {0} not found.").format(vehicle))
+	frappe.has_permission("GPS Log", "create", throw=True)
 
-	gps_log = frappe.new_doc("GPS Log")
-	gps_log.vehicle = vehicle
-	gps_log.timestamp = timestamp
-	gps_log.latitude = latitude
-	gps_log.longitude = longitude
-	gps_log.speed = speed
-	gps_log.heading = heading
-	gps_log.address = address
-	gps_log.alert_type = alert_type
-	gps_log.alert_message = alert_message
-	gps_log.insert(ignore_permissions=True)
+	return store_pushed_point(
+		_resolve_tracker(imei),
+		{
+			"timestamp": timestamp,
+			"latitude": latitude,
+			"longitude": longitude,
+			"speed": speed,
+			"heading": heading,
+			"address": address,
+			"device_status": device_status,
+			"acc_status": acc_status,
+			"alarm_code": alarm_code,
+			"alarm_message": alarm_message,
+		},
+	)
 
-	return {"gps_log": gps_log.name, "status": "ok"}
+
+def store_pushed_point(tracker: frappe._dict, point: dict) -> dict:
+	"""Store one pushed reading as a GPS Log, and as a GPS Alarm when it carries a code."""
+	timestamp = point.get("timestamp")
+	latitude = point.get("latitude")
+	longitude = point.get("longitude")
+	speed = point.get("speed")
+	heading = point.get("heading")
+	address = point.get("address")
+	alarm_code = point.get("alarm_code")
+
+	payload = {
+		"gpsTime": timestamp,
+		"lat": latitude,
+		"lng": longitude,
+		"speed": speed,
+		"course": heading,
+		"address": address,
+		"status": point.get("device_status"),
+		"accStatus": point.get("acc_status"),
+	}
+
+	created_log = create_gps_log(tracker, payload)
+	created_alarm = False
+
+	if alarm_code:
+		created_alarm = create_gps_alarm(
+			tracker,
+			{
+				"alarmCode": alarm_code,
+				"alarmTime": timestamp,
+				"message": point.get("alarm_message"),
+				"lat": latitude,
+				"lng": longitude,
+				"speed": speed,
+				"course": heading,
+				"address": address,
+			},
+		)
+
+	return {"gps_log": created_log, "gps_alarm": created_alarm}
 
 
 @frappe.whitelist(methods=["POST"])
 def receive_gps_batch(data: list) -> dict:
-	"""Receive a batch of GPS data points.
+	"""Accept a batch of position pushes, one dict per point.
 
 	Endpoint: POST /api/method/stride.api.gps.receive_gps_batch
 
-	Args:
-	        data: List of dicts, each with the same fields as receive_gps_data
-
-	Returns:
-	        dict with count of created records and any errors
+	Each dict takes the same keys as receive_gps_data. Points that fail are
+	reported by index rather than failing the whole batch.
 	"""
+	frappe.has_permission("GPS Log", "create", throw=True)
+	data = frappe.parse_json(data) if isinstance(data, str) else data
+
+	# A batch from one device repeats the same IMEI, so resolve each one once.
+	trackers = {}
 	created = 0
 	errors = []
 
-	for idx, point in enumerate(data):
+	for index, point in enumerate(data):
 		try:
-			vehicle = point.get("vehicle")
-			if not vehicle or not frappe.db.exists("Vehicle", vehicle):
-				errors.append({"index": idx, "error": f"Vehicle not found: {vehicle}"})
-				continue
+			imei = point["imei"]
+			if imei not in trackers:
+				trackers[imei] = _resolve_tracker(imei)
 
-			gps_log = frappe.new_doc("GPS Log")
-			gps_log.update(
-				{
-					"vehicle": vehicle,
-					"timestamp": point.get("timestamp"),
-					"latitude": point.get("latitude"),
-					"longitude": point.get("longitude"),
-					"speed": point.get("speed"),
-					"heading": point.get("heading"),
-					"address": point.get("address"),
-					"alert_type": point.get("alert_type"),
-					"alert_message": point.get("alert_message"),
-				}
-			)
-			gps_log.insert(ignore_permissions=True)
-			created += 1
-		except Exception as e:
-			errors.append({"index": idx, "error": str(e)})
+			if store_pushed_point(trackers[imei], point)["gps_log"]:
+				created += 1
+		except Exception as error:
+			errors.append({"index": index, "error": str(error)})
 
 	return {"created": created, "errors": errors}
+
+
+def _resolve_tracker(imei: str) -> frappe._dict:
+	"""Return the vehicle-bound tracker for an IMEI, or raise."""
+	tracker = frappe.db.get_value("GPS Tracker", {"imei": imei}, ["name", "vehicle"], as_dict=True)
+
+	if not tracker:
+		frappe.throw(_("No GPS Tracker is registered for IMEI {0}.").format(imei))
+
+	if not tracker.vehicle:
+		frappe.throw(_("GPS Tracker {0} is not linked to a Vehicle.").format(tracker.name))
+
+	return tracker

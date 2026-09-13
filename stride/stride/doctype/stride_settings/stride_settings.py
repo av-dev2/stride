@@ -16,10 +16,6 @@ class StrideSettings(Document):
 
 		enable_auto_reconciliation: DF.Check
 		enable_auto_invoicing: DF.Check
-		gps_account: DF.Data | None
-		gps_api_key: DF.Password
-		gps_api_url: DF.Data | None
-		gps_polling_interval_minutes: DF.Int
 	# end: auto-generated types
 
 	pass

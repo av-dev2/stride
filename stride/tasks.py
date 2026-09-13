@@ -207,17 +207,14 @@ def _apply_item_tax_template(si, item_row, item_code: str, company: str) -> None
 
 
 def poll_gps_data() -> None:
-	"""Cron job (every 15 min): poll IOPGPS API for vehicle locations.
+	"""Cron job: refresh vehicle positions for every GPS Provider that is due."""
+	from stride.gps.sync import poll_due_providers
 
-	Fetches real-time device positions and creates GPS Log records.
-	Configured via Stride Settings (GPS section).
-	"""
-	from stride.api.gps import poll_iopgps_locations
+	poll_due_providers()
 
-	result = poll_iopgps_locations()
 
-	if result.get("errors"):
-		frappe.log_error(
-			title="GPS Polling: Errors",
-			message="\n".join(result["errors"]),
-		)
+def refresh_gps_tokens() -> None:
+	"""Cron job: renew provider access tokens before they expire."""
+	from stride.gps.sync import refresh_expiring_tokens
+
+	refresh_expiring_tokens()

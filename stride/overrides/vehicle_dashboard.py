@@ -18,7 +18,8 @@ def get_data(data: dict | None = None) -> dict:
 	transactions.extend(
 		[
 			{"label": "Rentals", "items": ["Rental Contract", "Lease"]},
-			{"label": "Operations", "items": ["Vehicle Handover", "GPS Log"]},
+			{"label": "Operations", "items": ["Vehicle Handover"]},
+			{"label": "Tracking", "items": ["GPS Tracker", "GPS Log", "GPS Alarm"]},
 		]
 	)
 
@@ -31,7 +32,9 @@ def get_data(data: dict | None = None) -> dict:
 			"Rental Contract": "vehicle",
 			"Lease": "vehicle",
 			"Vehicle Handover": "vehicle",
+			"GPS Tracker": "vehicle",
 			"GPS Log": "vehicle",
+			"GPS Alarm": "vehicle",
 		}
 	)
 	data["non_standard_fieldnames"] = non_standard

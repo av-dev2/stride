@@ -1,0 +1,174 @@
+{
+  "actions": [],
+  "allow_rename": 1,
+  "autoname": "field:provider_name",
+  "creation": "2026-09-13 00:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "provider_name",
+    "provider_type",
+    "column_break_provider",
+    "enabled",
+    "polling_interval_minutes",
+    "connection_section",
+    "api_url",
+    "authentication_type",
+    "column_break_connection",
+    "account_name",
+    "secret_key",
+    "account_id",
+    "token_section",
+    "access_token",
+    "column_break_token",
+    "token_expires_on",
+    "last_polled_on"
+  ],
+  "fields": [
+    {
+      "fieldname": "provider_name",
+      "fieldtype": "Data",
+      "in_list_view": 1,
+      "label": "Provider Name",
+      "reqd": 1,
+      "unique": 1
+    },
+    {
+      "default": "IOPGPS",
+      "description": "Tracking platform this provider connects to",
+      "fieldname": "provider_type",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Provider Type",
+      "options": "IOPGPS",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_provider",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "1",
+      "description": "Disabled providers are skipped by the polling and token refresh jobs",
+      "fieldname": "enabled",
+      "fieldtype": "Check",
+      "in_list_view": 1,
+      "label": "Enabled"
+    },
+    {
+      "default": "15",
+      "description": "How often the scheduler refreshes positions for this provider's trackers",
+      "fieldname": "polling_interval_minutes",
+      "fieldtype": "Int",
+      "label": "Polling Interval (Minutes)",
+      "non_negative": 1
+    },
+    {
+      "fieldname": "connection_section",
+      "fieldtype": "Section Break",
+      "label": "Connection"
+    },
+    {
+      "default": "https://open.iopgps.com",
+      "description": "Base URL of the provider API, without a trailing path",
+      "fieldname": "api_url",
+      "fieldtype": "Data",
+      "label": "API URL",
+      "options": "URL",
+      "reqd": 1
+    },
+    {
+      "default": "Signature",
+      "description": "Signature: IOPGPS md5(md5(secret key) + timestamp). Bearer Token: the secret key is sent as-is.",
+      "fieldname": "authentication_type",
+      "fieldtype": "Select",
+      "label": "Authentication Type",
+      "options": "Signature\nBearer Token",
+      "reqd": 1
+    },
+    {
+      "fieldname": "column_break_connection",
+      "fieldtype": "Column Break"
+    },
+    {
+      "description": "Login account name, sent as <code>appid</code> when authenticating",
+      "fieldname": "account_name",
+      "fieldtype": "Data",
+      "label": "Account Name",
+      "reqd": 1
+    },
+    {
+      "description": "API secret key issued by the provider. Not the account login password.",
+      "fieldname": "secret_key",
+      "fieldtype": "Password",
+      "label": "Secret Key",
+      "reqd": 1
+    },
+    {
+      "description": "Optional account id used to scope device queries to a sub-account",
+      "fieldname": "account_id",
+      "fieldtype": "Data",
+      "label": "Account ID"
+    },
+    {
+      "collapsible": 1,
+      "fieldname": "token_section",
+      "fieldtype": "Section Break",
+      "label": "Access Token"
+    },
+    {
+      "description": "Refreshed automatically. Never edit by hand.",
+      "fieldname": "access_token",
+      "fieldtype": "Password",
+      "label": "Access Token",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_token",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "token_expires_on",
+      "fieldtype": "Datetime",
+      "label": "Token Expires On",
+      "read_only": 1
+    },
+    {
+      "fieldname": "last_polled_on",
+      "fieldtype": "Datetime",
+      "label": "Last Polled On",
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 0,
+  "links": [
+    {
+      "link_doctype": "GPS Tracker",
+      "link_fieldname": "gps_provider"
+    }
+  ],
+  "modified": "2026-09-13 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Stride",
+  "name": "GPS Provider",
+  "naming_rule": "By fieldname",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    }
+  ],
+  "sort_field": "creation",
+  "sort_order": "DESC",
+  "states": [],
+  "track_changes": 1
+}

@@ -72,10 +72,10 @@ def get_columns() -> list[dict]:
 			"width": 110,
 		},
 		{
-			"label": _("GPS Tracker"),
-			"fieldname": "gps_tracker_id",
-			"fieldtype": "Data",
-			"width": 120,
+			"label": _("Trackers"),
+			"fieldname": "tracker_count",
+			"fieldtype": "Int",
+			"width": 90,
 		},
 		{
 			"label": _("Vehicle Value"),
@@ -103,11 +103,12 @@ def get_data(filters: dict | None = None) -> list[dict]:
 			"make",
 			"model",
 			"vehicle_status",
-			"gps_tracker_id",
 			"vehicle_value",
 		],
 		order_by="name asc",
 	)
+
+	tracker_counts = get_tracker_counts([v.name for v in vehicles])
 
 	data = []
 	for v in vehicles:
@@ -134,12 +135,26 @@ def get_data(filters: dict | None = None) -> list[dict]:
 				"current_customer": active_lease.customer if active_lease else None,
 				"current_lease": active_lease.name if active_lease else None,
 				"lease_end_date": active_lease.end_date if active_lease else None,
-				"gps_tracker_id": v.gps_tracker_id or "",
+				"tracker_count": tracker_counts.get(v.name, 0),
 				"vehicle_value": v.vehicle_value,
 			}
 		)
 
 	return data
+
+
+def get_tracker_counts(vehicles: list[str]) -> dict[str, int]:
+	"""Return how many active GPS Trackers each vehicle carries."""
+	if not vehicles:
+		return {}
+
+	rows = frappe.db.get_all(
+		"GPS Tracker",
+		filters={"vehicle": ("in", vehicles), "is_active": 1},
+		fields=["vehicle", "count(name) as tracker_count"],
+		group_by="vehicle",
+	)
+	return {row.vehicle: row.tracker_count for row in rows}
 
 
 def get_chart_data(data: list[dict]) -> dict:
