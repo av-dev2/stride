@@ -7,13 +7,7 @@
     "invoicing_section",
     "enable_auto_invoicing",
     "invoicing_column_break",
-    "enable_auto_reconciliation",
-    "gps_section",
-    "gps_account",
-    "gps_api_url",
-    "gps_column_break",
-    "gps_api_key",
-    "gps_polling_interval_minutes"
+    "enable_auto_reconciliation"
   ],
   "fields": [
     {
@@ -38,47 +32,12 @@
       "fieldname": "enable_auto_reconciliation",
       "fieldtype": "Check",
       "label": "Enable Auto Reconciliation"
-    },
-    {
-      "fieldname": "gps_section",
-      "fieldtype": "Section Break",
-      "label": "GPS Tracking (IOPGPS)"
-    },
-    {
-      "description": "IOPGPS account name (used for API authentication)",
-      "fieldname": "gps_account",
-      "fieldtype": "Data",
-      "label": "GPS Account"
-    },
-    {
-      "description": "IOPGPS API base URL",
-      "fieldname": "gps_api_url",
-      "fieldtype": "Data",
-      "label": "GPS API URL"
-    },
-    {
-      "fieldname": "gps_column_break",
-      "fieldtype": "Column Break"
-    },
-    {
-      "description": "Authentication key for IOPGPS API",
-      "fieldname": "gps_api_key",
-      "fieldtype": "Password",
-      "label": "GPS API Key"
-    },
-    {
-      "default": "15",
-      "description": "Frequency (in minutes) for polling GPS data from IOPGPS",
-      "fieldname": "gps_polling_interval_minutes",
-      "fieldtype": "Int",
-      "label": "GPS Polling Interval (Minutes)",
-      "non_negative": 1
     }
   ],
   "index_web_pages_for_search": 0,
   "issingle": 1,
   "links": [],
-  "modified": "2024-01-01 00:00:00.000000",
+  "modified": "2026-09-13 00:00:00.000000",
   "modified_by": "Administrator",
   "module": "Stride",
   "name": "Stride Settings",
